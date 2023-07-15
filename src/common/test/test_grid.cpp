@@ -1,4 +1,5 @@
 #include "../../grid.h"
+#include "../../createGridBarrierVisitor.h"
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -121,11 +122,58 @@ TEST_CASE("TestSetBarrier","[Grid]") {
 
     CHECK_FALSE(g.isBarrierAt(c1));
 
-    g.setBarrier(c1);
+    CHECK(g.setBarrier(c1));
 
     CHECK(g.isBarrierAt(c1));
 
 }
 
+TEST_CASE("TestSetBarrierFailsWhenOutOfBounds","[Grid]") {
+
+    Grid g = Grid();
+    uint16_t sizeX = 128;
+    uint16_t sizeY = 128;
+    g.init(sizeX, sizeY);
+
+    Coord c1 = Coord(200, 200);
+
+    CHECK_FALSE(g.setBarrier(c1));
+
+    CHECK_FALSE(g.isBarrierAt(c1));
+
+}
+
+TEST_CASE("TestZeroFillClearsBarriers","[Grid]") {
+
+    Grid g = Grid();
+    uint16_t sizeX = 128;
+    uint16_t sizeY = 128;
+    g.init(sizeX, sizeY);
+
+    Coord c1 = Coord(10, 10);
+    g.setBarrier(c1);
+    CHECK(g.isBarrierAt(c1));
+    CHECK_FALSE(g.getBarrierLocations().empty());
+    
+    g.zeroFill();
+
+    CHECK_FALSE(g.isBarrierAt(c1));
+    // test barrier locations are empty
+    CHECK(g.getBarrierLocations().empty());
+}
+
+TEST_CASE("TestGetBarrierLocations","[Grid]") {
+
+    Grid g = Grid();
+    uint16_t sizeX = 128;
+    uint16_t sizeY = 128;
+    g.init(sizeX, sizeY);
+
+    CHECK(g.getBarrierLocations().empty());
+
+    g.setBarrier({10,20});
+
+    CHECK(g.getBarrierLocations().size() == 1);
+}
 
 }

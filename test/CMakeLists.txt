@@ -17,11 +17,16 @@ set(
     ../src/common/test/test_polar.cpp
     ../src/common/test/test_grid.cpp
     ../src/common/test/test_column.cpp
+    ../src/common/test/test_createGridBarrierVisitor.cpp
+    ../src/common/test/test_gridBuilder.cpp
     ../src/common/src/polar.cpp
     ../src/common/src/coord.cpp 
     ../src/common/src/dir.cpp
     ../src/common/src/column.cpp
     ../src/grid.cpp
+    ../src/createGridBarrierVisitor.cpp
+    ../src/gridBuilder.cpp
+    ../src/random.cpp
 )
 
 include(FetchContent)
@@ -33,6 +38,13 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(Catch2)
+
+SET(GCC_COVERAGE_COMPILE_FLAGS "-O3 -Wall -fexceptions -fopenmp")
+SET(GCC_COVERAGE_LINK_FLAGS    "-lpthread -O3 -lz -lgomp")
+
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
+SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
+set( CMAKE_VERBOSE_MAKEFILE on )
 
 add_executable(${exe_name} ${sources})
 

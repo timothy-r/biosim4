@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <vector>
 #include <functional>
+
+#include "gridLocationVisitor.h"
 #include "./common/include/coord.h"
 #include "./common/include/column.h"
 
@@ -41,16 +43,18 @@ public:
     uint16_t at(Coord loc) const;
     uint16_t at(uint16_t x, uint16_t y) const;
 
-    void set(Coord loc, uint16_t val);
-    void set(uint16_t x, uint16_t y, uint16_t val);
+    bool set(Coord loc, uint16_t val);
+    bool set(uint16_t x, uint16_t y, uint16_t val);
     
     // set this location as a barrier
-    void setBarrier(int16_t x, int16_t y);
-    void setBarrier(Coord loc);
+    bool setBarrier(int16_t x, int16_t y);
+    bool setBarrier(Coord loc);
 
     void createBarrier(unsigned barrierType);
     const std::vector<Coord> &getBarrierLocations() const;
     const std::vector<Coord> &getBarrierCenters() const;
+
+    void acceptCircular(GridLocationVisitor &v, Coord loc, float radius);
 
     // Direct access:
     Column & operator[](uint16_t columnXNum);

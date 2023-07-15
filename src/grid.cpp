@@ -2,7 +2,8 @@
 
 #include <functional>
 #include <cassert>
-#include "simulator.h"
+#include "grid.h"
+#include "common/include/dir.h"
 
 namespace BS {
 
@@ -17,7 +18,10 @@ void Grid::zeroFill()
 { 
     for (Column &column : data) 
         column.zeroFill(); 
-    }
+
+    barrierLocations.clear();
+    barrierCenters.clear();
+}
 
 uint16_t Grid::sizeX() const 
 { 
@@ -78,30 +82,67 @@ uint16_t Grid::at(uint16_t x, uint16_t y) const
     }
 }
 
-void Grid::set(Coord loc, uint16_t val)
+bool Grid::set(Coord loc, uint16_t val)
 { 
     if (isInBounds(loc)){
         data[loc.x][loc.y] = val;
+        return true;
     }
+
+    return false;
 }
 
-void Grid::set(uint16_t x, uint16_t y, uint16_t val)
+bool Grid::set(uint16_t x, uint16_t y, uint16_t val)
 {
     if (isInBounds(x,y)){
         data[x][y] = val;
+        return true;
     }
+    return false;
 }
 
-void Grid::setBarrier(int16_t x, int16_t y)
+bool Grid::setBarrier(int16_t x, int16_t y)
 {
-    set(x, y, BARRIER);
-    barrierLocations.push_back( {x, y} );
+    if (set(x, y, BARRIER)) {
+        barrierLocations.push_back( {x, y} );
+
+        return true;
+    }
+    
+    return false;
 }
 
-void Grid::setBarrier(Coord loc)
+bool Grid::setBarrier(Coord loc)
 {
-    set(loc, BARRIER);
-    barrierLocations.push_back( loc );
+    if (set(loc, BARRIER)){
+        barrierLocations.push_back( loc );
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * call the visitor's visit method for each Coord location in the circle centered at loc
+*/
+void Grid::acceptCircular(GridLocationVisitor &v, Coord loc, float radius)
+{
+    for (int dx = -std::min<int>(radius, loc.x); dx <= std::min<int>(radius, (sizeX() - loc.x) - 1); ++dx) {
+        int16_t x = loc.x + dx;
+        
+        // assert(x >= 0 && x < p.sizeX);
+
+        int extentY = (int)sqrt(radius * radius - dx * dx);
+        for (int dy = -std::min<int>(extentY, loc.y); dy <= std::min<int>(extentY, (sizeY() - loc.y) - 1); ++dy) {
+            int16_t y = loc.y + dy;
+
+            if (isInBounds(x, y)) {
+                // assert(y >= 0 && y < p.sizeY);
+                v.visit(Coord {x, y} );
+            }
+        }
+    }
+
 }
 
 const std::vector<Coord> &Grid::getBarrierLocations() const

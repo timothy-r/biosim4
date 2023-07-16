@@ -28,7 +28,7 @@ namespace BS {
 
             Grid();
 
-            void init(uint16_t sizeX, uint16_t sizeY);
+            void init(uint16_t layers, uint16_t sizeX, uint16_t sizeY);
             void zeroFill();
             
             uint16_t sizeX() const;
@@ -45,6 +45,18 @@ namespace BS {
             uint16_t at(Coord loc) const;
             uint16_t at(uint16_t x, uint16_t y) const;
 
+            /**
+             * access to layers
+            */
+            void incrementLayer(uint16_t layerNum, Coord loc);
+
+            uint8_t getLayerMagnitude(uint16_t layerNum, Coord loc) const;// { return (*this)[layerNum][loc.x][loc.y]; }
+ 
+            void fadeLayer(unsigned layerNum);
+
+            /**
+             * Acces to grid
+            */
             void set(Coord loc, uint16_t val);
             void set(uint16_t x, uint16_t y, uint16_t val);
             
@@ -65,9 +77,12 @@ namespace BS {
             unsigned longProbePopulationFwd(Coord loc, Dir dir, unsigned longProbeDist);
 
         private:
-            // std::vector<Column> data;
             // the base Grid data layer
             Layer data;
+            
+            // add support for layers above the base grid data
+            std::vector<Layer> layers;
+
             std::vector<Coord> barrierLocations;
             std::vector<Coord> barrierCenters;
     };

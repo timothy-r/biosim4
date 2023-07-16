@@ -7,9 +7,10 @@ namespace BS {
 TEST_CASE("TestGridSizes","[Grid]") {
     
     Grid g = Grid();
+    uint16_t numLayers = 1;
     uint16_t sizeX = 128;
     uint16_t sizeY = 128;
-    g.init(sizeX, sizeY);
+    g.init(numLayers, sizeX, sizeY);
 
     CHECK(sizeX == g.sizeX());
     CHECK(sizeY == g.sizeY());
@@ -28,9 +29,10 @@ TEST_CASE("TestDefaultGridIsEmpty","[Grid]") {
 TEST_CASE("TestGridIsInBounds","[Grid]") {
     
     Grid g = Grid();
+    uint16_t numLayers = 1;
     uint16_t sizeX = 128;
     uint16_t sizeY = 128;
-    g.init(sizeX, sizeY);
+    g.init(numLayers, sizeX, sizeY);
 
     Coord c1 = Coord(0, 0);
 
@@ -55,9 +57,10 @@ TEST_CASE("TestGridIsInBounds","[Grid]") {
 
 TEST_CASE("TestGridIsEmptyAt","[Grid]") {
     Grid g = Grid();
+    uint16_t numLayers = 1;
     uint16_t sizeX = 128;
     uint16_t sizeY = 128;
-    g.init(sizeX, sizeY);
+    g.init(numLayers, sizeX, sizeY);
 
     Coord c1 = Coord(0, 0);
     CHECK(g.isEmptyAt(c1));
@@ -73,9 +76,10 @@ TEST_CASE("TestGridIsEmptyAt","[Grid]") {
 
 TEST_CASE("TestGridIsBarrierAt","[Grid]") {
     Grid g = Grid();
+    uint16_t numLayers = 1;
     uint16_t sizeX = 128;
     uint16_t sizeY = 128;
-    g.init(sizeX, sizeY);
+    g.init(numLayers, sizeX, sizeY);
 
     Coord c1 = Coord(30, 70);
     CHECK_FALSE(g.isBarrierAt(c1));
@@ -87,9 +91,10 @@ TEST_CASE("TestGridIsBarrierAt","[Grid]") {
 
 TEST_CASE("TestGridIsOccupiedAt","[Grid]") {
     Grid g = Grid();
+    uint16_t numLayers = 1;
     uint16_t sizeX = 128;
     uint16_t sizeY = 128;
-    g.init(sizeX, sizeY);
+    g.init(numLayers, sizeX, sizeY);
 
     Coord c1 = Coord(100, 80);
     CHECK_FALSE(g.isOccupiedAt(c1));
@@ -105,9 +110,10 @@ TEST_CASE("TestGridIsOccupiedAt","[Grid]") {
 
 TEST_CASE("TestGridIsBorder","[Grid]") {
     Grid g = Grid();
+    uint16_t numLayers = 1;
     uint16_t sizeX = 128;
     uint16_t sizeY = 128;
-    g.init(sizeX, sizeY);
+    g.init(numLayers, sizeX, sizeY);
 
     Coord c1 = Coord(0, 0);
     CHECK(g.isBorder(c1));
@@ -119,22 +125,77 @@ TEST_CASE("TestGridIsBorder","[Grid]") {
     CHECK(g.isBorder(c3));
 }
 
-TEST_CASE("TestSetBarrier","[Grid]") {
+    TEST_CASE("TestSetBarrier","[Grid]") {
 
-    Grid g = Grid();
-    uint16_t sizeX = 128;
-    uint16_t sizeY = 128;
-    g.init(sizeX, sizeY);
+        Grid g = Grid();
+        uint16_t numLayers = 1;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
 
-    Coord c1 = Coord(10, 10);
+        Coord c1 = Coord(10, 10);
 
-    CHECK_FALSE(g.isBarrierAt(c1));
+        CHECK_FALSE(g.isBarrierAt(c1));
 
-    g.setBarrier(c1);
+        g.setBarrier(c1);
 
-    CHECK(g.isBarrierAt(c1));
+        CHECK(g.isBarrierAt(c1));
 
-}
+    }
 
+    TEST_CASE("TestGetLayerMagnitudeWithZeroLayers","[Grid]") {
 
+        Grid g = Grid();
+        uint16_t numLayers = 0;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
+
+        Coord c1 = Coord(10, 10);
+        uint8_t mag = g.getLayerMagnitude(1, c1);
+        CHECK(0 == mag);
+    }
+
+    TEST_CASE("TestGetLayerMagnitude","[Grid]") {
+
+        Grid g = Grid();
+        uint16_t numLayers = 1;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
+
+        Coord c1 = Coord(10, 10);
+        uint8_t mag = g.getLayerMagnitude(1, c1);
+        CHECK(0 == mag);
+    }
+
+    TEST_CASE("TestFadeLayerWithZeroLayers","[Grid]") {
+
+        Grid g = Grid();
+        uint16_t numLayers = 0;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
+
+        g.fadeLayer(1);
+
+        Coord c1 = Coord(10, 10);
+        uint8_t mag = g.getLayerMagnitude(1, c1);
+        CHECK(0 == mag);
+    }
+
+    TEST_CASE("TestFadeLayer","[Grid]") {
+
+        Grid g = Grid();
+        uint16_t numLayers = 1;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
+
+        g.fadeLayer(1);
+
+        Coord c1 = Coord(10, 10);
+        uint8_t mag = g.getLayerMagnitude(1, c1);
+        CHECK(0 == mag);
+    }
 }

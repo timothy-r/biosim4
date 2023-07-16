@@ -118,7 +118,7 @@ void simulator(int argc, char **argv)
 
     // Allocate container space. Once allocated, these container elements
     // will be reused in each new generation.
-    grid.init(p.sizeX, p.sizeY); // the land on which the peeps live
+    grid.init(p.signalLayers, p.sizeX, p.sizeY); // the land on which the peeps live
     signals.init(p.signalLayers, p.sizeX, p.sizeY);  // where the pheromones waft
     peeps.init(p.population); // the peeps themselves
 

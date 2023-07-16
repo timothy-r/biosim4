@@ -51,13 +51,15 @@ namespace BS {
 
             /**
              * access to layers
+             * consider naming layers using an enum
+             * eg signals = 1
             */
 
             bool hasLayer(uint16_t layerNum) const;
 
             void incrementLayer(uint16_t layerNum, Coord loc);
 
-            uint8_t getLayerMagnitude(uint16_t layerNum, Coord loc) const;// { return (*this)[layerNum][loc.x][loc.y]; }
+            uint8_t getLayerMagnitude(uint16_t layerNum, Coord loc) const;
  
             void fadeLayer(unsigned layerNum);
 

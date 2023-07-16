@@ -34,11 +34,22 @@
                 * iterate through Coordinates calling
                     * visitor.visit(Coord loc)
         * or a Grid iterator to iterate over points on the grid
+            * need to iterate over a specific set of points on a grid
+            * and operate on each point 
+            * separate logic to get the points (circle, square) from the operation logic (count layer values, set grid values etc)
+        
+        * a GridCircle / GridRectangle / GridShape abstract base class
+            * has a ref to the Grid
+            * A GridShapeFactory class - getCircle(Grid g, c, r) getRectangle(g, min, max)
+            * then call GridShape::accept(visitor)
+                * visitor.visit(Coord loc)
+            * GridShapes not just shapes as they respect the Grid boundaries
 
-        * add layers to the Grid data type? - for use by signals
+        [] add layers to the Grid data type? - for use by signals
             * Layer struct in signals is a variety of Grid
 
-        * add an explicit Grid::setBarrier(Coord loc) method
+        [x] add an explicit Grid::setBarrier(Coord loc) method
+
 
     * Create a Barrier type rather than setting grid locations?
         * can be any shape

@@ -6,18 +6,18 @@
 
 namespace BS {
 
+Grid::Grid() : data {Layer(0, 0)} {}
+
 // Allocates space for the 2D grid
 void Grid::init(uint16_t sizeX, uint16_t sizeY)
 {
-    auto col = Column(sizeY);
-    data = std::vector<Column>(sizeX, col);
+    data = Layer(sizeX, sizeY);
 }
 
 void Grid::zeroFill() 
 { 
-    for (Column &column : data) 
-        column.zeroFill(); 
-    }
+    data.zeroFill();
+}
 
 uint16_t Grid::sizeX() const 
 { 
@@ -26,7 +26,10 @@ uint16_t Grid::sizeX() const
 
 uint16_t Grid::sizeY() const 
 { 
-    return data[0].size(); 
+    if (data.size() > 0) {
+        return data[0].size();
+    } 
+    return 0;
 }
 
 bool Grid::isInBounds(int16_t x, uint16_t y) const

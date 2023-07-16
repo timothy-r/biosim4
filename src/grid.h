@@ -8,7 +8,7 @@
 #include <functional>
 #include "./common/include/coord.h"
 #include "./common/include/column.h"
-
+#include "./common/include/layer.h"
 namespace BS {
 
     // Grid is a somewhat dumb 2D container of unsigned 16-bit values.
@@ -19,8 +19,6 @@ namespace BS {
     // for direct access where the y index is the inner loop.
     // Element values are not otherwise interpreted by class Grid.
 
-    
-
     class Grid {
 
         public:
@@ -28,8 +26,11 @@ namespace BS {
             static const uint16_t EMPTY = 0; // Index value 0 is reserved
             static const uint16_t BARRIER = 0xffff;
 
+            Grid();
+
             void init(uint16_t sizeX, uint16_t sizeY);
             void zeroFill();
+            
             uint16_t sizeX() const;
             uint16_t sizeY() const;
 
@@ -64,7 +65,9 @@ namespace BS {
             unsigned longProbePopulationFwd(Coord loc, Dir dir, unsigned longProbeDist);
 
         private:
-            std::vector<Column> data;
+            // std::vector<Column> data;
+            // the base Grid data layer
+            Layer data;
             std::vector<Coord> barrierLocations;
             std::vector<Coord> barrierCenters;
     };

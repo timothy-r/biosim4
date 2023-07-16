@@ -16,6 +16,15 @@ TEST_CASE("TestGridSizes","[Grid]") {
 
 }
 
+TEST_CASE("TestDefaultGridIsEmpty","[Grid]") {
+    
+    Grid g = Grid();
+
+    CHECK(0 == g.sizeX());
+    CHECK(0 == g.sizeY());
+
+}
+
 TEST_CASE("TestGridIsInBounds","[Grid]") {
     
     Grid g = Grid();

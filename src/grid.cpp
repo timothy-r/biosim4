@@ -41,17 +41,17 @@ bool Grid::isInBounds(Coord loc) const
 
 bool Grid::isEmptyAt(Coord loc) const
 {
-    return at(loc) == EMPTY; 
+    return at(loc) == Grid::EMPTY; 
 }
 
 bool Grid::isBarrierAt(Coord loc) const
 { 
-    return at(loc) == BARRIER; 
+    return at(loc) == Grid::BARRIER; 
 }
 
 bool Grid::isOccupiedAt(Coord loc) const
 {
-    return at(loc) != EMPTY && at(loc) != BARRIER;
+    return at(loc) != Grid::EMPTY && at(loc) != Grid::BARRIER;
 }
 
 bool Grid::isBorder(Coord loc) const

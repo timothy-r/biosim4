@@ -54,7 +54,7 @@ TEST_CASE("TestGridIsEmptyAt","[Grid]") {
     CHECK(g.isEmptyAt(c1));
 
     Coord c2 = Coord(10, 10);
-    g.set(c2, BARRIER);
+    g.set(c2, Grid::BARRIER);
     CHECK_FALSE(g.isEmptyAt(c2));
 
     Coord c3 = Coord(100, 100);
@@ -72,7 +72,7 @@ TEST_CASE("TestGridIsBarrierAt","[Grid]") {
     CHECK_FALSE(g.isBarrierAt(c1));
 
     Coord c2 = Coord(10, 10);
-    g.set(c2, BARRIER);
+    g.set(c2, Grid::BARRIER);
     CHECK(g.isBarrierAt(c2));
 }
 
@@ -90,7 +90,7 @@ TEST_CASE("TestGridIsOccupiedAt","[Grid]") {
     CHECK(g.isOccupiedAt(c2));
 
     Coord c3 = Coord(10, 10);
-    g.set(c3, BARRIER);
+    g.set(c3, Grid::BARRIER);
     CHECK_FALSE(g.isOccupiedAt(c3));
 }
 

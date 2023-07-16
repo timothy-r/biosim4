@@ -19,10 +19,12 @@ set(
     ../src/common/test/test_column.cpp
     ../src/common/test/test_createGridBarrierVisitor.cpp
     ../src/common/test/test_gridBuilder.cpp
+    ../src/common/test/test_layer.cpp
     ../src/common/src/polar.cpp
     ../src/common/src/coord.cpp 
     ../src/common/src/dir.cpp
     ../src/common/src/column.cpp
+    ../src/common/src/layer.cpp
     ../src/grid.cpp
     ../src/createGridBarrierVisitor.cpp
     ../src/gridBuilder.cpp

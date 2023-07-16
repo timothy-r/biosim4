@@ -9,9 +9,10 @@ namespace BS {
     TEST_CASE("TestVisit","[CreateGridBarrierVisitor]") {
         
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         CreateGridBarrierVisitor visitor = CreateGridBarrierVisitor(g);
         
@@ -29,9 +30,11 @@ namespace BS {
     TEST_CASE("TestVisitRespectsGridBounds","[CreateGridBarrierVisitor]") {
         
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
+
 
         CreateGridBarrierVisitor visitor = CreateGridBarrierVisitor(g);
         

@@ -1,5 +1,5 @@
 // grid.cpp
-
+#include <cstdint>
 #include <functional>
 #include <cassert>
 #include "grid.h"
@@ -7,255 +7,303 @@
 
 namespace BS {
 
-// Allocates space for the 2D grid
-void Grid::init(uint16_t sizeX, uint16_t sizeY)
-{
-    auto col = Column(sizeY);
-    data = std::vector<Column>(sizeX, col);
-}
+    Grid::Grid() : data {Layer(0, 0)} {}
 
-void Grid::zeroFill() 
-{ 
-    for (Column &column : data) 
-        column.zeroFill(); 
 
-    barrierLocations.clear();
-    barrierCenters.clear();
-}
+    /**
+     * TODO: if this overwrites a barrier then remove from barrierLocations
+    */
+    bool Grid::set(uint16_t x, uint16_t y, uint16_t val)
+    {
+        if (isInBounds(x,y)){
+            data[x][y] = val;
+            return true;
+        }
+        return false;
+    }
 
-uint16_t Grid::sizeX() const 
-{ 
-    return data.size(); 
-}
+    bool Grid::setBarrier(int16_t x, int16_t y)
+    {
+        if (set(x, y, BARRIER)) {
+            barrierLocations.push_back( {x, y} );
 
-uint16_t Grid::sizeY() const 
-{ 
-    return data[0].size(); 
-}
+            return true;
+        }
+        
+        return false;
+    }
 
-bool Grid::isInBounds(int16_t x, uint16_t y) const
-{
-    return x >= 0 && x < sizeX() && y >= 0 && y < sizeY(); 
-}
+    bool Grid::setBarrier(Coord loc)
+    {
+        if (set(loc, Grid::BARRIER)){
+            barrierLocations.push_back( loc );
+            return true;
+        }
 
-bool Grid::isInBounds(Coord loc) const 
-{ 
-    return loc.x >= 0 && loc.x < sizeX() && loc.y >= 0 && loc.y < sizeY(); 
-}
+        return false;
+    }
 
-bool Grid::isEmptyAt(Coord loc) const
-{
-    return at(loc) == EMPTY; 
-}
+    /**
+     * call the visitor's visit method for each Coord location in the circle centered at loc
+    */
+    void Grid::acceptCircular(GridLocationVisitor &v, Coord loc, float radius)
+    {
+        for (int dx = -std::min<int>(radius, loc.x); dx <= std::min<int>(radius, (sizeX() - loc.x) - 1); ++dx) {
+            int16_t x = loc.x + dx;
+            
+            int extentY = (int)sqrt(radius * radius - dx * dx);
+            for (int dy = -std::min<int>(extentY, loc.y); dy <= std::min<int>(extentY, (sizeY() - loc.y) - 1); ++dy) {
+                int16_t y = loc.y + dy;
 
-bool Grid::isBarrierAt(Coord loc) const
-{ 
-    return at(loc) == BARRIER; 
-}
+                if (isInBounds(x, y)) {
+                    v.visit(Coord {x, y} );
+                }
+            }
+        }
 
-bool Grid::isOccupiedAt(Coord loc) const
-{
-    return at(loc) != EMPTY && at(loc) != BARRIER;
-}
+    }
 
-bool Grid::isBorder(Coord loc) const
-{
-    return loc.x == 0 || loc.x == sizeX() - 1 || loc.y == 0 || loc.y == sizeY() - 1;
-}
+    /**
+     * Allocates space for the 2D grid with layers
+    */
+    void Grid::init(uint16_t numLayers, uint16_t sizeX, uint16_t sizeY)
+    {
+        data = Layer(sizeX, sizeY);
+        layers = std::vector<Layer>(numLayers, Layer(sizeX, sizeY));
+    }
 
-uint16_t Grid::at(Coord loc) const
-{ 
-    if (isInBounds(loc)) {
-        return data[loc.x][loc.y];
-    } else {
+    /**
+     * Empty the grid, all layers and locations
+    */
+    void Grid::zeroFill()
+    { 
+        data.zeroFill();
+
+        for (Layer &layer : layers) { 
+            layer.zeroFill();
+        }
+
+        barrierLocations.clear();
+        barrierCenters.clear();
+    }
+
+    uint16_t Grid::sizeX() const 
+    { 
+        return data.size(); 
+    }
+
+    uint16_t Grid::sizeY() const 
+    { 
+        if (data.size() > 0) {
+            return data[0].size();
+        } 
         return 0;
     }
-}
 
-uint16_t Grid::at(uint16_t x, uint16_t y) const
-{ 
-    if (isInBounds(x,y) ) {
-        return data[x][y];
-    } else {
-        // is this the correct response?
-        return 0;
-    }
-}
-
-/**
- * TODO: if this overwrites a barrier then remove from barrierLocations
-*/
-bool Grid::set(Coord loc, uint16_t val)
-{ 
-    if (isInBounds(loc)){
-        data[loc.x][loc.y] = val;
-        return true;
+    bool Grid::isInBounds(int16_t x, uint16_t y) const
+    {
+        return x >= 0 && x < sizeX() && y >= 0 && y < sizeY(); 
     }
 
-    return false;
-}
-
-/**
- * TODO: if this overwrites a barrier then remove from barrierLocations
-*/
-bool Grid::set(uint16_t x, uint16_t y, uint16_t val)
-{
-    if (isInBounds(x,y)){
-        data[x][y] = val;
-        return true;
+    bool Grid::isInBounds(Coord loc) const 
+    { 
+        return loc.x >= 0 && loc.x < sizeX() && loc.y >= 0 && loc.y < sizeY(); 
     }
-    return false;
-}
 
-bool Grid::setBarrier(int16_t x, int16_t y)
-{
-    if (set(x, y, BARRIER)) {
-        barrierLocations.push_back( {x, y} );
+    bool Grid::isEmptyAt(Coord loc) const
+    {
+        return at(loc) == Grid::EMPTY; 
+    }
 
-        return true;
+    bool Grid::isBarrierAt(Coord loc) const
+    { 
+        return at(loc) == Grid::BARRIER; 
+    }
+
+    bool Grid::isOccupiedAt(Coord loc) const
+    {
+        return at(loc) != Grid::EMPTY && at(loc) != Grid::BARRIER;
+    }
+
+    bool Grid::isBorder(Coord loc) const
+    {
+        return loc.x == 0 || loc.x == sizeX() - 1 || loc.y == 0 || loc.y == sizeY() - 1;
+    }
+
+    uint16_t Grid::at(Coord loc) const
+    { 
+        if (isInBounds(loc)) {
+            return data[loc.x][loc.y];
+        } else {
+            return 0;
+        }
+    }
+
+    uint16_t Grid::at(uint16_t x, uint16_t y) const
+    { 
+        if (isInBounds(x,y) ) {
+            return data[x][y];
+        } else {
+            // is this the correct response?
+            return 0;
+        }
     }
     
-    return false;
-}
+    void Grid::incrementLayer(uint16_t layerNum, Coord loc)
+    {
 
-bool Grid::setBarrier(Coord loc)
-{
-    if (set(loc, BARRIER)){
-        barrierLocations.push_back( loc );
-        return true;
     }
+    
+    /**
+    */
+    uint8_t Grid::getLayerMagnitude(uint16_t layerNum, Coord loc) const
+    {   
+        if (layerNum < layers.size() && isInBounds(loc)){
+            return layers[layerNum][loc.x][loc.y];
+        } else {
+            return 0;
+        }
+    }
+    
+    /**
+     * Iterates over the whole area of a single layer, reducing the value of each cell
+     *  
+     * TODO: parameterize fadeAmount, as an instance property?
+    */
+    void Grid::fadeLayer(unsigned layerNum)
+    {
+        constexpr unsigned fadeAmount = 1;
 
-    return false;
-}
-
-/**
- * call the visitor's visit method for each Coord location in the circle centered at loc
-*/
-void Grid::acceptCircular(GridLocationVisitor &v, Coord loc, float radius)
-{
-    for (int dx = -std::min<int>(radius, loc.x); dx <= std::min<int>(radius, (sizeX() - loc.x) - 1); ++dx) {
-        int16_t x = loc.x + dx;
-        
-        int extentY = (int)sqrt(radius * radius - dx * dx);
-        for (int dy = -std::min<int>(extentY, loc.y); dy <= std::min<int>(extentY, (sizeY() - loc.y) - 1); ++dy) {
-            int16_t y = loc.y + dy;
-
-            if (isInBounds(x, y)) {
-                v.visit(Coord {x, y} );
+        if (layerNum < layers.size()) {
+            for (int16_t x = 0; x < sizeX(); ++x) {
+                for (int16_t y = 0; y < sizeY(); ++y) {
+                    if (layers[layerNum][x][y] >= fadeAmount) {
+                        layers[layerNum][x][y] -= fadeAmount;  // fade center cell
+                    } else {
+                        layers[layerNum][x][y] = 0;
+                    }
+                }
             }
         }
     }
 
-}
+    bool Grid::set(Coord loc, uint16_t val)
+    { 
+        if (isInBounds(loc)){
+            data[loc.x][loc.y] = val;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-const std::vector<Coord> &Grid::getBarrierLocations() const
-{ 
-    return barrierLocations;
-}
+    const std::vector<Coord> &Grid::getBarrierLocations() const
+    { 
+        return barrierLocations;
+    }
 
-const std::vector<Coord> &Grid::getBarrierCenters() const
-{
-    return barrierCenters;
-}
+    const std::vector<Coord> &Grid::getBarrierCenters() const
+    {
+        return barrierCenters;
+    }
 
-// Direct access:
-Column & Grid::operator[](uint16_t columnXNum)
-{ 
-    return data[columnXNum];
-}
+    // Direct access:
+    Column & Grid::operator[](uint16_t columnXNum)
+    { 
+        return data[columnXNum];
+    }
 
-const Column & Grid::operator[](uint16_t columnXNum) const
-{ 
-    return data[columnXNum];
-}
+    const Column & Grid::operator[](uint16_t columnXNum) const
+    { 
+        return data[columnXNum];
+    }
 
-
-/**
-* Returns the number of locations to the next barrier in the
-* specified direction, not including loc. 
-* Ignores agents in the way.
-* If the distance to the border is less than the longProbeDist distance
-* and no barriers are found, returns longProbeDist.
-*
-* Returns 0..longProbeDist.
-*/
-unsigned Grid::longProbeBarrierFwd(Coord loc, Dir dir, unsigned longProbeDist)
-{
-    assert(longProbeDist > 0);
-    unsigned count = 0;
-    loc = loc + dir;
-    unsigned numLocsToTest = longProbeDist;
-    while (numLocsToTest > 0 && isInBounds(loc) && !isBarrierAt(loc)) {
-        ++count;
+    // Returns the number of locations to the next barrier in the
+    // specified direction, not including loc. Ignores agents in the way.
+    // If the distance to the border is less than the longProbeDist distance
+    // and no barriers are found, returns longProbeDist.
+    // Returns 0..longProbeDist.
+    unsigned Grid::longProbeBarrierFwd(Coord loc, Dir dir, unsigned longProbeDist)
+    {
+        assert(longProbeDist > 0);
+        unsigned count = 0;
         loc = loc + dir;
-        --numLocsToTest;
+        unsigned numLocsToTest = longProbeDist;
+        while (numLocsToTest > 0 && isInBounds(loc) && !isBarrierAt(loc)) {
+            ++count;
+            loc = loc + dir;
+            --numLocsToTest;
+        }
+        if (numLocsToTest > 0 && !isInBounds(loc)) {
+            return longProbeDist;
+        } else {
+            return count;
+        }
     }
-    if (numLocsToTest > 0 && !isInBounds(loc)) {
-        return longProbeDist;
-    } else {
-        return count;
-    }
-}
 
-// Converts the number of locations (not including loc) to the next barrier location
-// along opposite directions of the specified axis to the sensor range. If no barriers
-// are found, the result is sensor mid-range. Ignores agents in the path.
-float Grid::getShortProbeBarrierDistance(Coord loc0, Dir dir, unsigned probeDistance)
-{
-    unsigned countFwd = 0;
-    unsigned countRev = 0;
-    Coord loc = loc0 + dir;
-    unsigned numLocsToTest = probeDistance;
-    // Scan positive direction
-    while (numLocsToTest > 0 && isInBounds(loc) && !isBarrierAt(loc)) {
-        ++countFwd;
+    // Converts the number of locations (not including loc) to the next barrier location
+    // along opposite directions of the specified axis to the sensor range. If no barriers
+    // are found, the result is sensor mid-range. Ignores agents in the path.
+    float Grid::getShortProbeBarrierDistance(Coord loc0, Dir dir, unsigned probeDistance)
+    {
+        unsigned countFwd = 0;
+        unsigned countRev = 0;
+        Coord loc = loc0 + dir;
+        unsigned numLocsToTest = probeDistance;
+
+        // Scan positive direction
+        while (numLocsToTest > 0 && isInBounds(loc) && !isBarrierAt(loc)) {
+            ++countFwd;
+            loc = loc + dir;
+            --numLocsToTest;
+        }
+        if (numLocsToTest > 0 && !isInBounds(loc)) {
+            countFwd = probeDistance;
+        }
+
+        // Scan negative direction
+        numLocsToTest = probeDistance;
+        loc = loc0 - dir;
+
+        while (numLocsToTest > 0 && isInBounds(loc) && !isBarrierAt(loc)) {
+            ++countRev;
+            loc = loc - dir;
+            --numLocsToTest;
+        }
+
+        if (numLocsToTest > 0 && !isInBounds(loc)) {
+            countRev = probeDistance;
+        }
+
+        /**
+         * TODO: does this belong in Grid? and if not where?
+        */
+        float sensorVal = ((countFwd - countRev) + probeDistance); // convert to 0..2*probeDistance
+        sensorVal = (sensorVal / 2.0) / probeDistance; // convert to 0.0..1.0
+        return sensorVal;
+    }
+
+    // Returns the number of locations to the next agent in the specified
+    // direction, not including loc. If the probe encounters a boundary or a
+    // barrier before reaching the longProbeDist distance, returns longProbeDist.
+    // Returns 0..longProbeDist.
+    unsigned Grid::longProbePopulationFwd(Coord loc, Dir dir, unsigned longProbeDist)
+    {
+        assert(longProbeDist > 0);
+        unsigned count = 0;
         loc = loc + dir;
-        --numLocsToTest;
+        unsigned numLocsToTest = longProbeDist;
+        while (numLocsToTest > 0 && isInBounds(loc) && isEmptyAt(loc)) {
+            ++count;
+            loc = loc + dir;
+            --numLocsToTest;
+        }
+        if (numLocsToTest > 0 && (!isInBounds(loc) || isBarrierAt(loc))) {
+            return longProbeDist;
+        } else {
+            return count;
+        }
     }
-    if (numLocsToTest > 0 && !isInBounds(loc)) {
-        countFwd = probeDistance;
-    }
-    // Scan negative direction
-    numLocsToTest = probeDistance;
-    loc = loc0 - dir;
-    while (numLocsToTest > 0 && isInBounds(loc) && !isBarrierAt(loc)) {
-        ++countRev;
-        loc = loc - dir;
-        --numLocsToTest;
-    }
-    if (numLocsToTest > 0 && !isInBounds(loc)) {
-        countRev = probeDistance;
-    }
-
-    /**
-     * TODO: does this belong in Grid? and if not where?
-    */
-    float sensorVal = ((countFwd - countRev) + probeDistance); // convert to 0..2*probeDistance
-    sensorVal = (sensorVal / 2.0) / probeDistance; // convert to 0.0..1.0
-    return sensorVal;
-}
-
-// Returns the number of locations to the next agent in the specified
-// direction, not including loc. If the probe encounters a boundary or a
-// barrier before reaching the longProbeDist distance, returns longProbeDist.
-// Returns 0..longProbeDist.
-unsigned Grid::longProbePopulationFwd(Coord loc, Dir dir, unsigned longProbeDist)
-{
-    assert(longProbeDist > 0);
-    unsigned count = 0;
-    loc = loc + dir;
-    unsigned numLocsToTest = longProbeDist;
-    while (numLocsToTest > 0 && isInBounds(loc) && isEmptyAt(loc)) {
-        ++count;
-        loc = loc + dir;
-        --numLocsToTest;
-    }
-    if (numLocsToTest > 0 && (!isInBounds(loc) || isBarrierAt(loc))) {
-        return longProbeDist;
-    } else {
-        return count;
-    }
-}
 
 
 } // end namespace BS

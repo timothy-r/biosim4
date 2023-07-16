@@ -10,68 +10,91 @@
 #include "gridLocationVisitor.h"
 #include "./common/include/coord.h"
 #include "./common/include/column.h"
-
+#include "./common/include/layer.h"
 namespace BS {
 
-// Grid is a somewhat dumb 2D container of unsigned 16-bit values.
-// Grid understands that the elements are either EMPTY, BARRIER, or
-// otherwise an index value into the peeps container.
-// The elements are allocated and cleared to EMPTY in the ctor.
-// Prefer .at() and .set() for random element access. Or use Grid[x][y]
-// for direct access where the y index is the inner loop.
-// Element values are not otherwise interpreted by class Grid.
+    // Grid is a somewhat dumb 2D container of unsigned 16-bit values.
+    // Grid understands that the elements are either EMPTY, BARRIER, or
+    // otherwise an index value into the peeps container.
+    // The elements are allocated and cleared to EMPTY in the ctor.
+    // Prefer .at() and .set() for random element access. Or use Grid[x][y]
+    // for direct access where the y index is the inner loop.
+    // Element values are not otherwise interpreted by class Grid.
 
-const uint16_t EMPTY = 0; // Index value 0 is reserved
-const uint16_t BARRIER = 0xffff;
+    class Grid {
 
-class Grid {
-public:
+        public:
 
-    void init(uint16_t sizeX, uint16_t sizeY);
-    void zeroFill();
-    uint16_t sizeX() const;
-    uint16_t sizeY() const;
+            static const uint16_t EMPTY = 0; // Index value 0 is reserved
+            static const uint16_t BARRIER = 0xffff;
 
-    bool isInBounds(int16_t x, uint16_t y) const;
-    bool isInBounds(Coord loc) const;
-    bool isEmptyAt(Coord loc) const;
-    bool isBarrierAt(Coord loc) const;
+            Grid();
 
-    // Occupied means an agent is living there.
-    bool isOccupiedAt(Coord loc) const;
-    bool isBorder(Coord loc) const;
-    
-    uint16_t at(Coord loc) const;
-    uint16_t at(uint16_t x, uint16_t y) const;
+            void init(uint16_t layers, uint16_t sizeX, uint16_t sizeY);
+            void zeroFill();
+            
+            uint16_t sizeX() const;
+            uint16_t sizeY() const;
 
-    bool set(Coord loc, uint16_t val);
-    bool set(uint16_t x, uint16_t y, uint16_t val);
-    
-    // set this location as a barrier
-    bool setBarrier(int16_t x, int16_t y);
-    bool setBarrier(Coord loc);
+            bool isInBounds(int16_t x, uint16_t y) const;
+            bool isInBounds(Coord loc) const;
+            bool isEmptyAt(Coord loc) const;
+            bool isBarrierAt(Coord loc) const;
 
-    void createBarrier(unsigned barrierType);
-    const std::vector<Coord> &getBarrierLocations() const;
-    const std::vector<Coord> &getBarrierCenters() const;
+            // Occupied means an agent is living there.
+            bool isOccupiedAt(Coord loc) const;
+            bool isBorder(Coord loc) const;
+            uint16_t at(Coord loc) const;
+            uint16_t at(uint16_t x, uint16_t y) const;
 
-    void acceptCircular(GridLocationVisitor &v, Coord loc, float radius);
+            void acceptCircular(GridLocationVisitor &v, Coord loc, float radius);
 
-    // Direct access:
-    Column & operator[](uint16_t columnXNum);
-    const Column & operator[](uint16_t columnXNum) const;
+            // Direct access:
+            // Column & operator[](uint16_t columnXNum);
+            // const Column & operator[](uint16_t columnXNum) const;
+            /**
+             * access to layers
+            */
+            void incrementLayer(uint16_t layerNum, Coord loc);
 
-    unsigned longProbeBarrierFwd(Coord loc, Dir dir, unsigned longProbeDist);
-    float getShortProbeBarrierDistance(Coord loc0, Dir dir, unsigned probeDistance);
-    unsigned longProbePopulationFwd(Coord loc, Dir dir, unsigned longProbeDist);
+            uint8_t getLayerMagnitude(uint16_t layerNum, Coord loc) const;// { return (*this)[layerNum][loc.x][loc.y]; }
+ 
+            void fadeLayer(unsigned layerNum);
 
-private:
-    std::vector<Column> data;
-    std::vector<Coord> barrierLocations;
-    std::vector<Coord> barrierCenters;
-};
+            /**
+             * Acces to grid
+            */
+            bool set(Coord loc, uint16_t val);
+            bool set(uint16_t x, uint16_t y, uint16_t val);
+            
+            // set this location as a barrier
+            bool setBarrier(int16_t x, int16_t y);
+            bool setBarrier(Coord loc);
 
-extern void unitTestGridVisitNeighborhood();
+            void createBarrier(unsigned barrierType);
+            const std::vector<Coord> &getBarrierLocations() const;
+            const std::vector<Coord> &getBarrierCenters() const;
+
+            // Direct access:
+            Column & operator[](uint16_t columnXNum);
+            const Column & operator[](uint16_t columnXNum) const;
+
+            unsigned longProbeBarrierFwd(Coord loc, Dir dir, unsigned longProbeDist);
+            float getShortProbeBarrierDistance(Coord loc0, Dir dir, unsigned probeDistance);
+            unsigned longProbePopulationFwd(Coord loc, Dir dir, unsigned longProbeDist);
+
+        private:
+            // the base Grid data layer
+            Layer data;
+            
+            // add support for layers above the base grid data
+            std::vector<Layer> layers;
+
+            std::vector<Coord> barrierLocations;
+            std::vector<Coord> barrierCenters;
+    };
+
+    extern void unitTestGridVisitNeighborhood();
 
 } // end namespace BS
 

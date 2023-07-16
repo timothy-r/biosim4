@@ -14,9 +14,11 @@ TEST_CASE("TestBuildNoBarriers","[GridBuilder]") {
     randomUint.initialize(true, 12345678);
 
     Grid g = Grid();
-    uint16_t sizeX = 12;
-    uint16_t sizeY = 12;
-    g.init(sizeX, sizeY);
+        uint16_t numLayers = 1;
+        uint16_t sizeX = 12;
+        uint16_t sizeY = 12;
+        g.init(numLayers, sizeX, sizeY);
+
 
     GridBuilder b = GridBuilder(randomUint);
 
@@ -36,9 +38,10 @@ TEST_CASE("TestBuildVerticalBar","[GridBuilder]") {
     randomUint.initialize(true, 12345678);
 
     Grid g = Grid();
+    uint16_t numLayers = 1;
     uint16_t sizeX = 12;
     uint16_t sizeY = 12;
-    g.init(sizeX, sizeY);
+    g.init(numLayers, sizeX, sizeY);
 
     GridBuilder b = GridBuilder(randomUint);
 
@@ -64,9 +67,10 @@ TEST_CASE("TestBuildRandomVerticalBar","[GridBuilder]") {
     randomUint.initialize(true, 12345678);
 
     Grid g = Grid();
+    uint16_t numLayers = 1;
     uint16_t sizeX = 128;
     uint16_t sizeY = 128;
-    g.init(sizeX, sizeY);
+    g.init(numLayers, sizeX, sizeY);
 
     GridBuilder b = GridBuilder(randomUint);
 

@@ -13,21 +13,32 @@ namespace BS {
     TEST_CASE("TestGridSizes","[Grid]") {
         
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         CHECK(sizeX == g.sizeX());
         CHECK(sizeY == g.sizeY());
 
     }
 
-    TEST_CASE("TestGridIsInBounds","[Grid]") {
-        
-        Grid g = Grid();
-        uint16_t sizeX = 128;
-        uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+TEST_CASE("TestDefaultGridIsEmpty","[Grid]") {
+    
+    Grid g = Grid();
+
+    CHECK(0 == g.sizeX());
+    CHECK(0 == g.sizeY());
+
+}
+
+TEST_CASE("TestGridIsInBounds","[Grid]") {
+    
+    Grid g = Grid();
+    uint16_t numLayers = 1;
+    uint16_t sizeX = 128;
+    uint16_t sizeY = 128;
+    g.init(numLayers, sizeX, sizeY);
 
         Coord c1 = Coord(0, 0);
 
@@ -52,15 +63,16 @@ namespace BS {
 
     TEST_CASE("TestGridIsEmptyAt","[Grid]") {
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         Coord c1 = Coord(0, 0);
         CHECK(g.isEmptyAt(c1));
 
         Coord c2 = Coord(10, 10);
-        g.set(c2, BARRIER);
+        g.set(c2, Grid::BARRIER);
         CHECK_FALSE(g.isEmptyAt(c2));
 
         Coord c3 = Coord(100, 100);
@@ -70,23 +82,25 @@ namespace BS {
 
     TEST_CASE("TestGridIsBarrierAt","[Grid]") {
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         Coord c1 = Coord(30, 70);
         CHECK_FALSE(g.isBarrierAt(c1));
 
         Coord c2 = Coord(10, 10);
-        g.set(c2, BARRIER);
+        g.set(c2, Grid::BARRIER);
         CHECK(g.isBarrierAt(c2));
     }
 
     TEST_CASE("TestGridIsOccupiedAt","[Grid]") {
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         Coord c1 = Coord(100, 80);
         CHECK_FALSE(g.isOccupiedAt(c1));
@@ -96,15 +110,17 @@ namespace BS {
         CHECK(g.isOccupiedAt(c2));
 
         Coord c3 = Coord(10, 10);
-        g.set(c3, BARRIER);
+        g.set(c3, Grid::BARRIER);
         CHECK_FALSE(g.isOccupiedAt(c3));
     }
 
     TEST_CASE("TestGridIsBorder","[Grid]") {
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         Coord c1 = Coord(0, 0);
         CHECK(g.isBorder(c1));
@@ -119,15 +135,17 @@ namespace BS {
     TEST_CASE("TestSetBarrier","[Grid]") {
 
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         Coord c1 = Coord(10, 10);
 
         CHECK_FALSE(g.isBarrierAt(c1));
 
         CHECK(g.setBarrier(c1));
+        g.setBarrier(c1);
 
         CHECK(g.isBarrierAt(c1));
 
@@ -136,9 +154,10 @@ namespace BS {
     TEST_CASE("TestSetBarrierFailsWhenOutOfBounds","[Grid]") {
 
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         Coord c1 = Coord(200, 200);
 
@@ -151,15 +170,17 @@ namespace BS {
     TEST_CASE("TestZeroFillClearsBarriers","[Grid]") {
 
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         Coord c1 = Coord(10, 10);
         g.setBarrier(c1);
         CHECK(g.isBarrierAt(c1));
         CHECK_FALSE(g.getBarrierLocations().empty());
-        
+        CHECK(g.getBarrierLocations().size() == 1);
+
         g.zeroFill();
 
         CHECK_FALSE(g.isBarrierAt(c1));
@@ -170,9 +191,10 @@ namespace BS {
     TEST_CASE("TestGetBarrierLocations","[Grid]") {
 
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         CHECK(g.getBarrierLocations().empty());
 
@@ -184,9 +206,10 @@ namespace BS {
     TEST_CASE("TestLongProbeBarrierFwd","[Grid]") {
 
         Grid g = Grid();
+        uint16_t numLayers = 1;
         uint16_t sizeX = 128;
         uint16_t sizeY = 128;
-        g.init(sizeX, sizeY);
+        g.init(numLayers, sizeX, sizeY);
 
         std::vector<Dir> directions = {Compass::N, Compass::NE, Compass::NW, Compass::W,
         Compass::SW, Compass::S, Compass::SE, Compass::E};
@@ -202,14 +225,64 @@ namespace BS {
                 CHECK(result == longProbeDist);
             }
         }
-
+    }
         // SECTION("With vertical barrier") {
         //     Coord loc = {64,64};
         //     unsigned longProbeDist = 10;
 
+    TEST_CASE("TestGetLayerMagnitudeWithZeroLayers","[Grid]") {
 
-        // }
+        Grid g = Grid();
+        uint16_t numLayers = 0;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
 
-        
+        Coord c1 = Coord(10, 10);
+        uint8_t mag = g.getLayerMagnitude(1, c1);
+        CHECK(0 == mag);
+    }
+
+    TEST_CASE("TestGetLayerMagnitude","[Grid]") {
+
+        Grid g = Grid();
+        uint16_t numLayers = 1;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
+
+        Coord c1 = Coord(10, 10);
+        uint8_t mag = g.getLayerMagnitude(1, c1);
+        CHECK(0 == mag);
+    }
+
+    TEST_CASE("TestFadeLayerWithZeroLayers","[Grid]") {
+
+        Grid g = Grid();
+        uint16_t numLayers = 0;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
+
+        g.fadeLayer(1);
+
+        Coord c1 = Coord(10, 10);
+        uint8_t mag = g.getLayerMagnitude(1, c1);
+        CHECK(0 == mag);
+    }
+
+    TEST_CASE("TestFadeLayer","[Grid]") {
+
+        Grid g = Grid();
+        uint16_t numLayers = 1;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
+
+        g.fadeLayer(1);
+
+        Coord c1 = Coord(10, 10);
+        uint8_t mag = g.getLayerMagnitude(1, c1);
+        CHECK(0 == mag);
     }
 }

@@ -49,42 +49,6 @@ float getPopulationDensityAlongAxis(Coord loc, Dir dir)
 }
 
 
-// // Converts the number of locations (not including loc) to the next barrier location
-// // along opposite directions of the specified axis to the sensor range. If no barriers
-// // are found, the result is sensor mid-range. Ignores agents in the path.
-// float getShortProbeBarrierDistance(Coord loc0, Dir dir, unsigned probeDistance)
-// {
-//     unsigned countFwd = 0;
-//     unsigned countRev = 0;
-//     Coord loc = loc0 + dir;
-//     unsigned numLocsToTest = probeDistance;
-//     // Scan positive direction
-//     while (numLocsToTest > 0 && grid.isInBounds(loc) && !grid.isBarrierAt(loc)) {
-//         ++countFwd;
-//         loc = loc + dir;
-//         --numLocsToTest;
-//     }
-//     if (numLocsToTest > 0 && !grid.isInBounds(loc)) {
-//         countFwd = probeDistance;
-//     }
-//     // Scan negative direction
-//     numLocsToTest = probeDistance;
-//     loc = loc0 - dir;
-//     while (numLocsToTest > 0 && grid.isInBounds(loc) && !grid.isBarrierAt(loc)) {
-//         ++countRev;
-//         loc = loc - dir;
-//         --numLocsToTest;
-//     }
-//     if (numLocsToTest > 0 && !grid.isInBounds(loc)) {
-//         countRev = probeDistance;
-//     }
-
-//     float sensorVal = ((countFwd - countRev) + probeDistance); // convert to 0..2*probeDistance
-//     sensorVal = (sensorVal / 2.0) / probeDistance; // convert to 0.0..1.0
-//     return sensorVal;
-// }
-
-
 float getSignalDensity(unsigned layerNum, Coord loc)
 {
     // returns magnitude of the specified signal layer in a neighborhood, with
@@ -144,53 +108,6 @@ float getSignalDensityAlongAxis(unsigned layerNum, Coord loc, Dir dir)
 
     return sensorVal;
 }
-
-
-// // Returns the number of locations to the next agent in the specified
-// // direction, not including loc. If the probe encounters a boundary or a
-// // barrier before reaching the longProbeDist distance, returns longProbeDist.
-// // Returns 0..longProbeDist.
-// unsigned longProbePopulationFwd(Coord loc, Dir dir, unsigned longProbeDist)
-// {
-//     assert(longProbeDist > 0);
-//     unsigned count = 0;
-//     loc = loc + dir;
-//     unsigned numLocsToTest = longProbeDist;
-//     while (numLocsToTest > 0 && grid.isInBounds(loc) && grid.isEmptyAt(loc)) {
-//         ++count;
-//         loc = loc + dir;
-//         --numLocsToTest;
-//     }
-//     if (numLocsToTest > 0 && (!grid.isInBounds(loc) || grid.isBarrierAt(loc))) {
-//         return longProbeDist;
-//     } else {
-//         return count;
-//     }
-// }
-
-
-// Returns the number of locations to the next barrier in the
-// specified direction, not including loc. Ignores agents in the way.
-// If the distance to the border is less than the longProbeDist distance
-// and no barriers are found, returns longProbeDist.
-// Returns 0..longProbeDist.
-// unsigned longProbeBarrierFwd(Coord loc, Dir dir, unsigned longProbeDist)
-// {
-//     assert(longProbeDist > 0);
-//     unsigned count = 0;
-//     loc = loc + dir;
-//     unsigned numLocsToTest = longProbeDist;
-//     while (numLocsToTest > 0 && grid.isInBounds(loc) && !grid.isBarrierAt(loc)) {
-//         ++count;
-//         loc = loc + dir;
-//         --numLocsToTest;
-//     }
-//     if (numLocsToTest > 0 && !grid.isInBounds(loc)) {
-//         return longProbeDist;
-//     } else {
-//         return count;
-//     }
-// }
 
 
 // Returned sensor values range SENSOR_MIN..SENSOR_MAX

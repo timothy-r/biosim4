@@ -19,8 +19,10 @@ void Indiv::initialize(uint16_t index_, Coord loc_, Genome &&genome_)
     age = 0;
     oscPeriod = 34; // ToDo !!! define a constant
     alive = true;
+    // TODO: pass the lastMoveDir as a parameter
     lastMoveDir = DirFactory::random8();
     responsiveness = 0.5; // range 0.0..1.0
+    // TODO: pass the longProbeDist as a parameter
     longProbeDist = p.longProbeDistance;
     challengeBits = (unsigned)false; // will be set true when some task gets accomplished
     genome = std::move(genome_);

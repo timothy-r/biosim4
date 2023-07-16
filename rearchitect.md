@@ -40,6 +40,19 @@
 
         * add an explicit Grid::setBarrier(Coord loc) method
 
+    * Create a Barrier type rather than setting grid locations?
+        * can be any shape
+        * has methods such as contains(Coord loc) to discover if the loc is within the shape's area
+        * Grid::isBarrierAt(Coord loc)
+            for (Shape s: barriers){
+                if s.contains(loc){
+                    return true;
+                }
+            }
+            return false;
+
+            // Grid setters need to respect barriers
+
 
     * RandomUintGenerator
 

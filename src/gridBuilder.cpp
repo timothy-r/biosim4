@@ -10,17 +10,17 @@ namespace BS {
      * two use cases, create a new Grid, refresh an existing Grid
      * reset grid & barriers, then add new barriers
     */
-    Grid GridBuilder::createBarrier(Grid &g, unsigned barrierType)
+    Grid GridBuilder::createBarrier(Grid &g, GridBuilder::barrierType type)
     {
         g.zeroFill();
 
-        switch(barrierType) {
+        switch(type) {
 
-            case 0:
+            case GridBuilder::barrierType::none:
                 return g;
 
             // Vertical bar in constant location
-            case 1:
+            case GridBuilder::barrierType::vertical_bar:
             {
                 int16_t minX = g.sizeX() / 2;
                 int16_t maxX = minX + 1;
@@ -33,7 +33,7 @@ namespace BS {
             // Vertical bar in random location
             // must respect size of grid, change hard coded 20 value
             // calculate from grid size x & y
-            case 2:
+            case GridBuilder::barrierType::random_vertical_bar:
             {
                 int16_t minX = randomUint(20, g.sizeX() - 20);
                 int16_t maxX = minX + 1;
@@ -45,7 +45,7 @@ namespace BS {
                 break;
 
             // five blocks staggered
-            case 3:
+            case GridBuilder::barrierType::five_bars_staggered:
             {
                 int16_t blockSizeX = 2;
                 int16_t blockSizeY = g.sizeX() / 3;
@@ -79,7 +79,7 @@ namespace BS {
             
 
             // Horizontal bar in constant location
-            case 4:
+            case GridBuilder::barrierType::horizontal_bar:
             {
                 int16_t minX = g.sizeX() / 4;
                 int16_t maxX = minX + g.sizeX() / 2;
@@ -90,11 +90,11 @@ namespace BS {
                 break;
 
             // Three floating islands -- different locations every generation
-            // case 5:
+            // case GridBuilder::barrierType::three_floating_islands: 
             //     break;
 
             // Spots, specified number, radius, locations
-            case 6:
+            case GridBuilder::barrierType::spots:
             {
                 // parameterize these values
                 unsigned numberOfLocations = 5;
@@ -114,9 +114,12 @@ namespace BS {
                     Coord loc = { (int16_t)(g.sizeX() / 2),
                                 (int16_t)(n * verticalSliceSize) };
 
-                    // visitor.acceptCircular(loc, radius);
+                    // g.acceptCircular(visitor, loc, radius);
                     
                     // visitNeighborhood(loc, radius, f);
+
+                    // TODO: need to find a way to set the barrier center
+                    // call Grid method directly?
                     // barrierCenters.push_back(loc);
                 }
 
@@ -132,7 +135,7 @@ namespace BS {
     }
 
     /**
-     * 
+     * change to use a Visitor Grid::acceptRectangular(loc min, loc max)
     */
     void GridBuilder::drawBox(Grid &grid, int16_t minX, int16_t minY, int16_t maxX, int16_t maxY)
     {

@@ -82,6 +82,9 @@ uint16_t Grid::at(uint16_t x, uint16_t y) const
     }
 }
 
+/**
+ * TODO: if this overwrites a barrier then remove from barrierLocations
+*/
 bool Grid::set(Coord loc, uint16_t val)
 { 
     if (isInBounds(loc)){
@@ -92,6 +95,9 @@ bool Grid::set(Coord loc, uint16_t val)
     return false;
 }
 
+/**
+ * TODO: if this overwrites a barrier then remove from barrierLocations
+*/
 bool Grid::set(uint16_t x, uint16_t y, uint16_t val)
 {
     if (isInBounds(x,y)){
@@ -130,14 +136,11 @@ void Grid::acceptCircular(GridLocationVisitor &v, Coord loc, float radius)
     for (int dx = -std::min<int>(radius, loc.x); dx <= std::min<int>(radius, (sizeX() - loc.x) - 1); ++dx) {
         int16_t x = loc.x + dx;
         
-        // assert(x >= 0 && x < p.sizeX);
-
         int extentY = (int)sqrt(radius * radius - dx * dx);
         for (int dy = -std::min<int>(extentY, loc.y); dy <= std::min<int>(extentY, (sizeY() - loc.y) - 1); ++dy) {
             int16_t y = loc.y + dy;
 
             if (isInBounds(x, y)) {
-                // assert(y >= 0 && y < p.sizeY);
                 v.visit(Coord {x, y} );
             }
         }
@@ -166,11 +169,16 @@ const Column & Grid::operator[](uint16_t columnXNum) const
     return data[columnXNum];
 }
 
-// Returns the number of locations to the next barrier in the
-// specified direction, not including loc. Ignores agents in the way.
-// If the distance to the border is less than the longProbeDist distance
-// and no barriers are found, returns longProbeDist.
-// Returns 0..longProbeDist.
+
+/**
+* Returns the number of locations to the next barrier in the
+* specified direction, not including loc. 
+* Ignores agents in the way.
+* If the distance to the border is less than the longProbeDist distance
+* and no barriers are found, returns longProbeDist.
+*
+* Returns 0..longProbeDist.
+*/
 unsigned Grid::longProbeBarrierFwd(Coord loc, Dir dir, unsigned longProbeDist)
 {
     assert(longProbeDist > 0);

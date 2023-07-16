@@ -37,9 +37,13 @@ public:
     void queueForMove(const Indiv &, Coord newLoc);
     void drainMoveQueue();
     unsigned deathQueueSize() const { return deathQueue.size(); }
+    
     // getIndiv() does no error checking -- check first that loc is occupied
     Indiv & getIndiv(Coord loc) { return individuals[grid.at(loc)]; }
+    
+    // TODO: deprecate, not in use
     const Indiv & getIndiv(Coord loc) const { return individuals[grid.at(loc)]; }
+    
     // Direct access:
     Indiv & operator[](uint16_t index) { return individuals[index]; }
     Indiv const & operator[](uint16_t index) const { return individuals[index]; }

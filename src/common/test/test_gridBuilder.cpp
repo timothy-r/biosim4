@@ -21,7 +21,7 @@ TEST_CASE("TestBuildNoBarriers","[GridBuilder]") {
     GridBuilder b = GridBuilder(randomUint);
 
     // 0 is no barriers
-    b.createBarrier(g, 0);
+    b.createBarrier(g, GridBuilder::barrierType::none);
 
     for (int16_t x = 0; x < sizeX; ++x) {
         for (int16_t y = 0; y < sizeY; ++y) {
@@ -43,7 +43,7 @@ TEST_CASE("TestBuildVerticalBar","[GridBuilder]") {
     GridBuilder b = GridBuilder(randomUint);
 
     // 1 is vertical bar
-    b.createBarrier(g, 1);
+    b.createBarrier(g, GridBuilder::barrierType::vertical_bar);
 
     int16_t minX = g.sizeX() / 2; // 6
     int16_t maxX = minX + 1; // 7
@@ -70,8 +70,7 @@ TEST_CASE("TestBuildRandomVerticalBar","[GridBuilder]") {
 
     GridBuilder b = GridBuilder(randomUint);
 
-    // 1 is random vertical bar
-    b.createBarrier(g, 2);
+    b.createBarrier(g, GridBuilder::barrierType::random_vertical_bar);
 
     CHECK_FALSE(g.getBarrierLocations().empty());
 }

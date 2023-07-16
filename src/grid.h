@@ -40,6 +40,7 @@ public:
     // Occupied means an agent is living there.
     bool isOccupiedAt(Coord loc) const;
     bool isBorder(Coord loc) const;
+    
     uint16_t at(Coord loc) const;
     uint16_t at(uint16_t x, uint16_t y) const;
 

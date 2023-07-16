@@ -49,12 +49,12 @@ namespace BS {
 
             void acceptCircular(GridLocationVisitor &v, Coord loc, float radius);
 
-            // Direct access:
-            // Column & operator[](uint16_t columnXNum);
-            // const Column & operator[](uint16_t columnXNum) const;
             /**
              * access to layers
             */
+
+            bool hasLayer(uint16_t layerNum) const;
+
             void incrementLayer(uint16_t layerNum, Coord loc);
 
             uint8_t getLayerMagnitude(uint16_t layerNum, Coord loc) const;// { return (*this)[layerNum][loc.x][loc.y]; }

@@ -252,7 +252,7 @@ TEST_CASE("TestGridIsInBounds","[Grid]") {
         g.init(numLayers, sizeX, sizeY);
 
         Coord c1 = Coord(10, 10);
-        uint8_t mag = g.getLayerMagnitude(1, c1);
+        uint8_t mag = g.getLayerMagnitude(0, c1);
         CHECK(0 == mag);
     }
 
@@ -282,7 +282,35 @@ TEST_CASE("TestGridIsInBounds","[Grid]") {
         g.fadeLayer(1);
 
         Coord c1 = Coord(10, 10);
-        uint8_t mag = g.getLayerMagnitude(1, c1);
+        uint8_t mag = g.getLayerMagnitude(0, c1);
         CHECK(0 == mag);
+    }
+
+    TEST_CASE("TestHasLayerZeroLayers","[Grid]") {
+
+        Grid g = Grid();
+        uint16_t numLayers = 0;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
+
+        CHECK_FALSE(g.hasLayer(0));
+        CHECK_FALSE(g.hasLayer(1));
+        
+        CHECK_FALSE(g.hasLayer(10));
+    }
+
+    TEST_CASE("TestHasLayer","[Grid]") {
+
+        Grid g = Grid();
+        uint16_t numLayers = 1;
+        uint16_t sizeX = 128;
+        uint16_t sizeY = 128;
+        g.init(numLayers, sizeX, sizeY);
+
+        CHECK(g.hasLayer(0));
+        CHECK_FALSE(g.hasLayer(1));
+        
+        CHECK_FALSE(g.hasLayer(10));
     }
 }

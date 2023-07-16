@@ -9,60 +9,6 @@ namespace BS {
 
     Grid::Grid() : data {Layer(0, 0)} {}
 
-
-    /**
-     * TODO: if this overwrites a barrier then remove from barrierLocations
-    */
-    bool Grid::set(uint16_t x, uint16_t y, uint16_t val)
-    {
-        if (isInBounds(x,y)){
-            data[x][y] = val;
-            return true;
-        }
-        return false;
-    }
-
-    bool Grid::setBarrier(int16_t x, int16_t y)
-    {
-        if (set(x, y, BARRIER)) {
-            barrierLocations.push_back( {x, y} );
-
-            return true;
-        }
-        
-        return false;
-    }
-
-    bool Grid::setBarrier(Coord loc)
-    {
-        if (set(loc, Grid::BARRIER)){
-            barrierLocations.push_back( loc );
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * call the visitor's visit method for each Coord location in the circle centered at loc
-    */
-    void Grid::acceptCircular(GridLocationVisitor &v, Coord loc, float radius)
-    {
-        for (int dx = -std::min<int>(radius, loc.x); dx <= std::min<int>(radius, (sizeX() - loc.x) - 1); ++dx) {
-            int16_t x = loc.x + dx;
-            
-            int extentY = (int)sqrt(radius * radius - dx * dx);
-            for (int dy = -std::min<int>(extentY, loc.y); dy <= std::min<int>(extentY, (sizeY() - loc.y) - 1); ++dy) {
-                int16_t y = loc.y + dy;
-
-                if (isInBounds(x, y)) {
-                    v.visit(Coord {x, y} );
-                }
-            }
-        }
-
-    }
-
     /**
      * Allocates space for the 2D grid with layers
     */
@@ -149,6 +95,11 @@ namespace BS {
         }
     }
     
+    bool Grid::hasLayer(uint16_t layerNum) const
+    {
+        return layerNum < layers.size();
+    }
+
     void Grid::incrementLayer(uint16_t layerNum, Coord loc)
     {
 
@@ -158,7 +109,7 @@ namespace BS {
     */
     uint8_t Grid::getLayerMagnitude(uint16_t layerNum, Coord loc) const
     {   
-        if (layerNum < layers.size() && isInBounds(loc)){
+        if (hasLayer(layerNum) && isInBounds(loc)){
             return layers[layerNum][loc.x][loc.y];
         } else {
             return 0;
@@ -174,7 +125,7 @@ namespace BS {
     {
         constexpr unsigned fadeAmount = 1;
 
-        if (layerNum < layers.size()) {
+        if (hasLayer(layerNum)) {
             for (int16_t x = 0; x < sizeX(); ++x) {
                 for (int16_t y = 0; y < sizeY(); ++y) {
                     if (layers[layerNum][x][y] >= fadeAmount) {
@@ -195,6 +146,59 @@ namespace BS {
         } else {
             return false;
         }
+    }
+
+/**
+     * TODO: if this overwrites a barrier then remove from barrierLocations
+    */
+    bool Grid::set(uint16_t x, uint16_t y, uint16_t val)
+    {
+        if (isInBounds(x,y)){
+            data[x][y] = val;
+            return true;
+        }
+        return false;
+    }
+
+    bool Grid::setBarrier(int16_t x, int16_t y)
+    {
+        if (set(x, y, Grid::BARRIER)) {
+            barrierLocations.push_back( {x, y} );
+
+            return true;
+        }
+        
+        return false;
+    }
+
+    bool Grid::setBarrier(Coord loc)
+    {
+        if (set(loc, Grid::BARRIER)){
+            barrierLocations.push_back( loc );
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * call the visitor's visit method for each Coord location in the circle centered at loc
+    */
+    void Grid::acceptCircular(GridLocationVisitor &v, Coord loc, float radius)
+    {
+        for (int dx = -std::min<int>(radius, loc.x); dx <= std::min<int>(radius, (sizeX() - loc.x) - 1); ++dx) {
+            int16_t x = loc.x + dx;
+            
+            int extentY = (int)sqrt(radius * radius - dx * dx);
+            for (int dy = -std::min<int>(extentY, loc.y); dy <= std::min<int>(extentY, (sizeY() - loc.y) - 1); ++dy) {
+                int16_t y = loc.y + dy;
+
+                if (isInBounds(x, y)) {
+                    v.visit(Coord {x, y} );
+                }
+            }
+        }
+
     }
 
     const std::vector<Coord> &Grid::getBarrierLocations() const

@@ -90,8 +90,8 @@ namespace BS {
                 break;
 
             // Three floating islands -- different locations every generation
-            // case GridBuilder::barrierType::three_floating_islands: 
-            //     break;
+            case GridBuilder::barrierType::three_floating_islands: 
+                break;
 
             // Spots, specified number, radius, locations
             case GridBuilder::barrierType::spots:

@@ -72,9 +72,6 @@ namespace BS {
             bool setBarrier(int16_t x, int16_t y);
             bool setBarrier(Coord loc);
 
-            // replace with GridBuilder
-            void createBarrier(unsigned barrierType);
-
             const std::vector<Coord> &getBarrierLocations() const;
             const std::vector<Coord> &getBarrierCenters() const;
 

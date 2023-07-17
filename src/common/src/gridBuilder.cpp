@@ -1,10 +1,9 @@
-// #include <cassert>
+#include "../include/gridBuilder.h"
+#include "../../random.h"
 
-#include "gridBuilder.h"
-#include "random.h"
-#include "createGridBarrierVisitor.h"
-#include "common/include/gridShape.h"
-#include "common/include/gridShapeFactory.h"
+#include "../include/createGridBarrierVisitor.h"
+#include "../include/gridShape.h"
+#include "../include/gridShapeFactory.h"
 
 namespace BS {
 

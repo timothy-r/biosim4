@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../../gridLocationVisitor.h"
-
+#include "gridLocationVisitor.h"
 
 namespace BS {
 

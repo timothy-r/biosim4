@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cassert>
 #include "simulator.h"
-#include "gridBuilder.h"
+#include "common/include/gridBuilder.h"
 namespace BS {
 
 extern std::pair<bool, float> passedSurvivalCriterion(const Indiv &indiv, unsigned challenge);

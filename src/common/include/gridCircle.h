@@ -1,7 +1,7 @@
 #pragma once
 
 #include "gridShape.h"
-#include "../../grid.h"
+#include "grid.h"
 #include "coord.h"
 
 namespace BS {

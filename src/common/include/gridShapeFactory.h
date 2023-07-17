@@ -4,7 +4,7 @@
 
 #include "gridShape.h"
 #include "coord.h"
-#include "../../grid.h"
+#include "grid.h"
 
 namespace BS
 {

@@ -1,6 +1,6 @@
 #include "../include/gridCircle.h"
 #include "../include/coord.h"
-#include "../../grid.h"
+#include "../include/grid.h"
 
 #include <catch2/catch_test_macros.hpp>
 

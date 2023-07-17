@@ -1,4 +1,4 @@
-#include "../../grid.h"
+#include "../include/grid.h"
 #include "../include/dir.h"
 #include "../include/compass.h"
 #include "../include/coord.h"

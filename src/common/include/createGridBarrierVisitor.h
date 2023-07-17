@@ -2,7 +2,7 @@
 
 #include "grid.h"
 #include "gridLocationVisitor.h"
-#include "common/include/coord.h"
+#include "coord.h"
 
 namespace BS
 {   

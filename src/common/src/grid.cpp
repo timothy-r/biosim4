@@ -2,8 +2,8 @@
 #include <cstdint>
 #include <functional>
 #include <cassert>
-#include "grid.h"
-#include "common/include/dir.h"
+#include "../include/grid.h"
+#include "../include/dir.h"
 
 namespace BS {
 

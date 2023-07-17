@@ -8,9 +8,9 @@
 #include <functional>
 
 #include "gridLocationVisitor.h"
-#include "./common/include/coord.h"
-#include "./common/include/column.h"
-#include "./common/include/layer.h"
+#include "coord.h"
+#include "column.h"
+#include "layer.h"
 
 namespace BS {
 

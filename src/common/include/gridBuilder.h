@@ -1,7 +1,7 @@
 #pragma once
 
 #include "grid.h"
-#include "random.h"
+#include "../../random.h"
 
 namespace BS {
 

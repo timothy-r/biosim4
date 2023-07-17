@@ -28,10 +28,10 @@ set(
     ../src/common/src/layer.cpp
     ../src/common/src/gridCircle.cpp
     ../src/common/src/gridRectangle.cpp
-    ../src/grid.cpp
-    ../src/createGridBarrierVisitor.cpp
+    ../src/common/src/grid.cpp
+    ../src/common/src/createGridBarrierVisitor.cpp
     ../src/common/src/gridShapeFactory.cpp
-    ../src/gridBuilder.cpp
+    ../src/common/src/gridBuilder.cpp
     ../src/random.cpp
 )
 

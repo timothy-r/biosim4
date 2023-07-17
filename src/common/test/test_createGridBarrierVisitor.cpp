@@ -1,5 +1,5 @@
-#include "../../createGridBarrierVisitor.h"
-#include "../../grid.h"
+#include "../include/createGridBarrierVisitor.h"
+#include "../include/grid.h"
 #include "../include/coord.h"
 #include "../include/gridShapeFactory.h"
 #include "../include/gridShape.h"

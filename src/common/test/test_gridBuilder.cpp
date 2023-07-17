@@ -1,5 +1,5 @@
-#include "../../grid.h"
-#include "../../gridBuilder.h"
+#include "../include/grid.h"
+#include "../include/gridBuilder.h"
 #include "../../random.h"
 #include "omp.h"
 

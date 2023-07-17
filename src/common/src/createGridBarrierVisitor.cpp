@@ -1,4 +1,4 @@
-#include "createGridBarrierVisitor.h"
+#include "../include/createGridBarrierVisitor.h"
 
 namespace BS
 {   

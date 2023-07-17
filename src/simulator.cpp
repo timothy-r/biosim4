@@ -16,7 +16,7 @@
 #include <algorithm>
 #include "simulator.h"     // the simulator data structures
 #include "imageWriter.h"   // this is for generating the movies
-
+#include "random.h"
 namespace BS {
 
 extern void initializeGeneration0();
@@ -39,6 +39,12 @@ ImageWriter imageWriter; // This is for generating the movies
 ParamManager paramManager;
 const Params &p { paramManager.getParamRef() }; // read-only params
 
+
+// The globally-scoped random number generator. Declaring it
+// threadprivate causes each thread to instantiate a private instance.
+
+extern RandomUintGenerator randomUint;
+#pragma omp threadprivate(randomUint)
 
 /**********************************************************************************************
 Execute one simStep for one individual.

@@ -30,8 +30,8 @@ struct Gene { //__attribute__((packed)) Gene {
     static constexpr float f1 = 8.0;
     static constexpr float f2 = 64.0;
     //float weightAsFloat() { return std::pow(weight / f1, 3.0) / f2; }
-    float weightAsFloat() const { return weight / 8192.0; }
-    static int16_t makeRandomWeight() { return randomUint(0, 0xffff) - 0x8000; }
+    float weightAsFloat() const;// { return weight / 8192.0; }
+    static int16_t makeRandomWeight();// { return randomUint(0, 0xffff) - 0x8000; }
 };
 
 

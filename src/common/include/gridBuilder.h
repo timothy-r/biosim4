@@ -28,8 +28,6 @@ namespace BS {
 
         private:
 
-            // void drawBox(Grid &grid, int16_t minX, int16_t minY, int16_t maxX, int16_t maxY);
-            
             RandomUintGenerator& randomUint;
     };
     

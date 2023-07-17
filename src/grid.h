@@ -45,17 +45,15 @@ namespace BS {
             // Occupied means an agent is living there.
             bool isOccupiedAt(Coord loc) const;
             bool isBorder(Coord loc) const;
+
             uint16_t at(Coord loc) const;
             uint16_t at(uint16_t x, uint16_t y) const;
-
-            // void acceptCircular(GridLocationVisitor &v, Coord loc, float radius);
 
             /**
              * access to layers
              * consider naming layers using an enum
              * eg signals = 1
             */
-
             bool hasLayer(uint16_t layerNum) const;
 
             void incrementLayer(uint16_t layerNum, Coord loc);
@@ -74,10 +72,14 @@ namespace BS {
             bool setBarrier(int16_t x, int16_t y);
             bool setBarrier(Coord loc);
 
+            // replace with GridBuilder
             void createBarrier(unsigned barrierType);
+
             const std::vector<Coord> &getBarrierLocations() const;
             const std::vector<Coord> &getBarrierCenters() const;
 
+            bool addBarrierCenter(Coord loc);
+            
             // Direct access:
             Column & operator[](uint16_t columnXNum);
             const Column & operator[](uint16_t columnXNum) const;

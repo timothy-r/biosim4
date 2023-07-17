@@ -181,6 +181,18 @@ namespace BS {
         return false;
     }
 
+    /**
+     * TODO: prevent setting this when the loc is occupied
+    */
+    bool Grid::addBarrierCenter(Coord loc)
+    {
+        if (isInBounds(loc)){
+            barrierCenters.push_back(loc);
+            return true;
+        }
+        return false;
+    }
+
     const std::vector<Coord> &Grid::getBarrierLocations() const
     { 
         return barrierLocations;

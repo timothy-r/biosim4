@@ -1,3 +1,5 @@
+// #include <cassert>
+
 #include "gridBuilder.h"
 #include "random.h"
 #include "createGridBarrierVisitor.h"
@@ -35,7 +37,6 @@ namespace BS {
 
                 shape->accept(visitor);
 
-                // drawBox(g, minX, minY, maxX, maxY);
             }
                break;
 
@@ -55,7 +56,6 @@ namespace BS {
 
                 shape->accept(visitor);
 
-                // drawBox(g, minX, minY, maxX, maxY);
             }
                 break;
 
@@ -73,29 +73,21 @@ namespace BS {
                 std::unique_ptr<GridShape> shape = GridShapeFactory::createGridRectangle(g, {x0, y0}, {x1, y1});
                 shape->accept(visitor);
 
-                // drawBox(g, x0, y0, x1, y1);
-
                 x0 += g.sizeX() / 2;
                 x1 = x0 + blockSizeX;
                 shape = GridShapeFactory::createGridRectangle(g, {x0, y0}, {x1, y1});
                 shape->accept(visitor);
 
-                // drawBox(g, x0, y0, x1, y1);
-                
                 y0 += g.sizeY() / 2;
                 y1 = y0 + blockSizeY;
                 shape = GridShapeFactory::createGridRectangle(g, {x0, y0}, {x1, y1});
                 shape->accept(visitor);
 
-                // drawBox(g, x0, y0, x1, y1);
-                
                 x0 -= g.sizeX() / 2;
                 x1 = x0 + blockSizeX;
                 shape = GridShapeFactory::createGridRectangle(g, {x0, y0}, {x1, y1});
                 shape->accept(visitor);
 
-                // drawBox(g, x0, y0, x1, y1);
-                
                 x0 = g.sizeX() / 2 - blockSizeX / 2;
                 x1 = x0 + blockSizeX;
                 y0 = g.sizeY() / 2 - blockSizeY / 2;
@@ -103,7 +95,6 @@ namespace BS {
                 shape = GridShapeFactory::createGridRectangle(g, {x0, y0}, {x1, y1});
                 shape->accept(visitor);
 
-                // drawBox(g, x0, y0, x1, y1);
             }
                 break;
             
@@ -119,8 +110,6 @@ namespace BS {
                 std::unique_ptr<GridShape> shape = GridShapeFactory::createGridRectangle(g, {minX, minY}, {maxX, maxY});
 
                 shape->accept(visitor);
-
-                // drawBox(g, minX, minY, maxX, maxY);
             }
                 break;
 
@@ -135,12 +124,6 @@ namespace BS {
                 unsigned numberOfLocations = 5;
                 float radius = 5.0;
 
-            // auto f = [&](Coord loc) {
-            //     setBarrier(loc);
-            //     // grid.set(loc, BARRIER);
-            //     // barrierLocations.push_back(loc);
-            // };
-
                 unsigned verticalSliceSize = g.sizeY() / (numberOfLocations + 1);
 
                 for (unsigned n = 1; n <= numberOfLocations; ++n) {
@@ -150,36 +133,22 @@ namespace BS {
                     auto shape = GridShapeFactory::createGridCircle(g, loc, radius);
                     shape->accept(visitor);
 
-                    // g.acceptCircular(visitor, loc, radius);
-                    
-                    // visitNeighborhood(loc, radius, f);
-
                     // TODO: need to find a way to set the barrier center
                     // call Grid method directly?
                     // barrierCenters.push_back(loc);
+                    g.addBarrierCenter(loc);
                 }
 
             }
 
             break;
+
             // default:
-                // assert(false);
+            //     assert(false);
 
         }
         
         return g;
     }
-
     
-    /**
-     * change to use a Visitor Grid::acceptRectangular(loc min, loc max)
-    // */
-    // void GridBuilder::drawBox(Grid &grid, int16_t minX, int16_t minY, int16_t maxX, int16_t maxY)
-    // {
-    //     for (int16_t x = minX; x <= maxX; ++x) {
-    //         for (int16_t y = minY; y <= maxY; ++y) {
-    //             grid.setBarrier(x,y);
-    //         }
-    //     }
-    // }
 }

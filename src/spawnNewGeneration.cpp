@@ -19,6 +19,7 @@ void initializeGeneration0()
 {
     // The grid has already been allocated, just clear and reuse it
     grid.zeroFill();
+    // get a GridBuilder to create the barriers
     grid.createBarrier(p.barrierType);
 
     // The signal layers have already been allocated, so just reuse them

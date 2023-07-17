@@ -43,8 +43,8 @@ const Params &p { paramManager.getParamRef() }; // read-only params
 // The globally-scoped random number generator. Declaring it
 // threadprivate causes each thread to instantiate a private instance.
 
-extern RandomUintGenerator randomUint;
-#pragma omp threadprivate(randomUint)
+// extern RandomUintGenerator randomUint;
+// #pragma omp threadprivate(randomUint)
 
 /**********************************************************************************************
 Execute one simStep for one individual.

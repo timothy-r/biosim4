@@ -122,7 +122,7 @@ unsigned RandomUintGenerator::operator()(unsigned min, unsigned max)
 
 // This is the globally-accessible random number generator. Declaring
 // it threadprivate causes each thread to instantiate a private instance.
-// RandomUintGenerator randomUint;
-// #pragma omp threadprivate(randomUint)
+RandomUintGenerator randomUint;
+#pragma omp threadprivate(randomUint)
 
 } // end namespace BS

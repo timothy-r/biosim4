@@ -1,6 +1,8 @@
 #include "gridBuilder.h"
 #include "random.h"
 #include "createGridBarrierVisitor.h"
+#include "common/include/gridShape.h"
+#include "common/include/gridShapeFactory.h"
 
 namespace BS {
 
@@ -14,6 +16,8 @@ namespace BS {
     {
         g.zeroFill();
 
+        CreateGridBarrierVisitor visitor = CreateGridBarrierVisitor(g);
+
         switch(type) {
 
             case GridBuilder::barrierType::none:
@@ -26,13 +30,20 @@ namespace BS {
                 int16_t maxX = minX + 1;
                 int16_t minY = g.sizeY() / 4;
                 int16_t maxY = minY + g.sizeY() / 2;
-                drawBox(g, minX, minY, maxX, maxY);
+
+                std::unique_ptr<GridShape> shape = GridShapeFactory::createGridRectangle(g, {minX, minY}, {maxX, maxY});
+
+                shape->accept(visitor);
+
+                // drawBox(g, minX, minY, maxX, maxY);
             }
                break;
 
-            // Vertical bar in random location
-            // must respect size of grid, change hard coded 20 value
-            // calculate from grid size x & y
+            /** 
+             * Vertical bar in random location
+             * TODO: must respect size of grid! change hard coded 20 value
+             * calculate from grid size x & y
+            */
             case GridBuilder::barrierType::random_vertical_bar:
             {
                 int16_t minX = randomUint(20, g.sizeX() - 20);
@@ -40,7 +51,11 @@ namespace BS {
                 int16_t minY = randomUint(20, g.sizeY() / 2 - 20);
                 int16_t maxY = minY + g.sizeY() / 2;
 
-                drawBox(g, minX, minY, maxX, maxY);
+                std::unique_ptr<GridShape> shape = GridShapeFactory::createGridRectangle(g, {minX, minY}, {maxX, maxY});
+
+                shape->accept(visitor);
+
+                // drawBox(g, minX, minY, maxX, maxY);
             }
                 break;
 
@@ -55,25 +70,40 @@ namespace BS {
                 int16_t x1 = x0 + blockSizeX;
                 int16_t y1 = y0 + blockSizeY;
 
-                drawBox(g, x0, y0, x1, y1);
+                std::unique_ptr<GridShape> shape = GridShapeFactory::createGridRectangle(g, {x0, y0}, {x1, y1});
+                shape->accept(visitor);
+
+                // drawBox(g, x0, y0, x1, y1);
 
                 x0 += g.sizeX() / 2;
                 x1 = x0 + blockSizeX;
-                drawBox(g, x0, y0, x1, y1);
+                shape = GridShapeFactory::createGridRectangle(g, {x0, y0}, {x1, y1});
+                shape->accept(visitor);
+
+                // drawBox(g, x0, y0, x1, y1);
                 
                 y0 += g.sizeY() / 2;
                 y1 = y0 + blockSizeY;
-                drawBox(g, x0, y0, x1, y1);
+                shape = GridShapeFactory::createGridRectangle(g, {x0, y0}, {x1, y1});
+                shape->accept(visitor);
+
+                // drawBox(g, x0, y0, x1, y1);
                 
                 x0 -= g.sizeX() / 2;
                 x1 = x0 + blockSizeX;
-                drawBox(g, x0, y0, x1, y1);
+                shape = GridShapeFactory::createGridRectangle(g, {x0, y0}, {x1, y1});
+                shape->accept(visitor);
+
+                // drawBox(g, x0, y0, x1, y1);
                 
                 x0 = g.sizeX() / 2 - blockSizeX / 2;
                 x1 = x0 + blockSizeX;
                 y0 = g.sizeY() / 2 - blockSizeY / 2;
                 y1 = y0 + blockSizeY;
-                drawBox(g, x0, y0, x1, y1);
+                shape = GridShapeFactory::createGridRectangle(g, {x0, y0}, {x1, y1});
+                shape->accept(visitor);
+
+                // drawBox(g, x0, y0, x1, y1);
             }
                 break;
             
@@ -85,7 +115,12 @@ namespace BS {
                 int16_t maxX = minX + g.sizeX() / 2;
                 int16_t minY = g.sizeY() / 2 + g.sizeY() / 4;
                 int16_t maxY = minY + 2;
-                drawBox(g, minX, minY, maxX, maxY);
+
+                std::unique_ptr<GridShape> shape = GridShapeFactory::createGridRectangle(g, {minX, minY}, {maxX, maxY});
+
+                shape->accept(visitor);
+
+                // drawBox(g, minX, minY, maxX, maxY);
             }
                 break;
 
@@ -100,8 +135,6 @@ namespace BS {
                 unsigned numberOfLocations = 5;
                 float radius = 5.0;
 
-                // CreateGridBarrierVisitor visitor = CreateGridBarrierVisitor(g);
-
             // auto f = [&](Coord loc) {
             //     setBarrier(loc);
             //     // grid.set(loc, BARRIER);
@@ -113,6 +146,9 @@ namespace BS {
                 for (unsigned n = 1; n <= numberOfLocations; ++n) {
                     Coord loc = { (int16_t)(g.sizeX() / 2),
                                 (int16_t)(n * verticalSliceSize) };
+
+                    auto shape = GridShapeFactory::createGridCircle(g, loc, radius);
+                    shape->accept(visitor);
 
                     // g.acceptCircular(visitor, loc, radius);
                     
@@ -134,15 +170,16 @@ namespace BS {
         return g;
     }
 
+    
     /**
      * change to use a Visitor Grid::acceptRectangular(loc min, loc max)
-    */
-    void GridBuilder::drawBox(Grid &grid, int16_t minX, int16_t minY, int16_t maxX, int16_t maxY)
-    {
-        for (int16_t x = minX; x <= maxX; ++x) {
-            for (int16_t y = minY; y <= maxY; ++y) {
-                grid.setBarrier(x,y);
-            }
-        }
-    }
+    // */
+    // void GridBuilder::drawBox(Grid &grid, int16_t minX, int16_t minY, int16_t maxX, int16_t maxY)
+    // {
+    //     for (int16_t x = minX; x <= maxX; ++x) {
+    //         for (int16_t y = minY; y <= maxY; ++y) {
+    //             grid.setBarrier(x,y);
+    //         }
+    //     }
+    // }
 }

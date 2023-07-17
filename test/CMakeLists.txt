@@ -27,6 +27,7 @@ set(
     ../src/common/src/column.cpp
     ../src/common/src/layer.cpp
     ../src/common/src/gridCircle.cpp
+    ../src/common/src/gridRectangle.cpp
     ../src/grid.cpp
     ../src/createGridBarrierVisitor.cpp
     ../src/common/src/gridShapeFactory.cpp

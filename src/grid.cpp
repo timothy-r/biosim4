@@ -181,25 +181,25 @@ namespace BS {
         return false;
     }
 
-    /**
-     * call the visitor's visit method for each Coord location in the circle centered at loc
-    */
-    void Grid::acceptCircular(GridLocationVisitor &v, Coord loc, float radius)
-    {
-        for (int dx = -std::min<int>(radius, loc.x); dx <= std::min<int>(radius, (sizeX() - loc.x) - 1); ++dx) {
-            int16_t x = loc.x + dx;
+    // /**
+    //  * call the visitor's visit method for each Coord location in the circle centered at loc
+    // */
+    // void Grid::acceptCircular(GridLocationVisitor &v, Coord loc, float radius)
+    // {
+    //     for (int dx = -std::min<int>(radius, loc.x); dx <= std::min<int>(radius, (sizeX() - loc.x) - 1); ++dx) {
+    //         int16_t x = loc.x + dx;
             
-            int extentY = (int)sqrt(radius * radius - dx * dx);
-            for (int dy = -std::min<int>(extentY, loc.y); dy <= std::min<int>(extentY, (sizeY() - loc.y) - 1); ++dy) {
-                int16_t y = loc.y + dy;
+    //         int extentY = (int)sqrt(radius * radius - dx * dx);
+    //         for (int dy = -std::min<int>(extentY, loc.y); dy <= std::min<int>(extentY, (sizeY() - loc.y) - 1); ++dy) {
+    //             int16_t y = loc.y + dy;
 
-                if (isInBounds(x, y)) {
-                    v.visit(Coord {x, y} );
-                }
-            }
-        }
+    //             if (isInBounds(x, y)) {
+    //                 v.visit(Coord {x, y} );
+    //             }
+    //         }
+    //     }
 
-    }
+    // }
 
     const std::vector<Coord> &Grid::getBarrierLocations() const
     { 

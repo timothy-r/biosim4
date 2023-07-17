@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "gridShape.h"
 #include "coord.h"
 #include "../../grid.h"
@@ -12,9 +14,9 @@ namespace BS
             /* data */
 
         public:
-            static GridShape createGridCircle(Grid &g, Coord l, float r);
+            static std::unique_ptr<GridShape> createGridCircle(Grid &g, Coord l, float r);
 
-            static GridShape createGridSquare(Grid &g, Coord min, Coord max);
+            // static GridShape& createGridSquare(Grid &g, Coord min, Coord max);
 
 
         // GridShapeFactory(/* args */);

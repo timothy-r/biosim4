@@ -12,7 +12,7 @@ namespace BS {
 
             GridCircle(Grid &g, Coord l, float r);
 
-            void accept(GridLocationVisitor &visitor);
+            void accept(GridLocationVisitor &visitor) override;
         
         private:
             Grid& grid;

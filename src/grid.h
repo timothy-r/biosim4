@@ -11,6 +11,7 @@
 #include "./common/include/coord.h"
 #include "./common/include/column.h"
 #include "./common/include/layer.h"
+
 namespace BS {
 
     // Grid is a somewhat dumb 2D container of unsigned 16-bit values.
@@ -47,7 +48,7 @@ namespace BS {
             uint16_t at(Coord loc) const;
             uint16_t at(uint16_t x, uint16_t y) const;
 
-            void acceptCircular(GridLocationVisitor &v, Coord loc, float radius);
+            // void acceptCircular(GridLocationVisitor &v, Coord loc, float radius);
 
             /**
              * access to layers

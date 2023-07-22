@@ -13,7 +13,9 @@ namespace BS {
             GridRectangle(Grid &g, Coord min, Coord max);
 
             void accept(GridLocationVisitor &visitor) override;
-        
+
+            // ~GridRectangle();
+
         private:
             Grid& grid;
             Coord min;

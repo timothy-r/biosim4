@@ -1,7 +1,10 @@
 // genome-compare.cpp -- compute similarity of two genomes
 
 #include <cassert>
-#include "simulator.h"
+// #include "simulator.h"
+#include "../include/genome-neurons.h"
+#include "../include/peeps.h"
+#include "../../random.h"
 
 namespace BS {
 
@@ -133,9 +136,9 @@ float hammingDistanceBytes(const Genome &genome1, const Genome &genome2)
 // Returns 0.0..1.0
 //
 // ToDo: optimize by approximation for long genomes
-float genomeSimilarity(const Genome &g1, const Genome &g2)
+float genomeSimilarity(const Genome &g1, const Genome &g2, const unsigned genomeComparisonMethod)
 {
-    switch (p.genomeComparisonMethod) {
+    switch (genomeComparisonMethod) {
     case 0:
         return jaro_winkler_distance(g1, g2);
     case 1:
@@ -150,21 +153,21 @@ float genomeSimilarity(const Genome &g1, const Genome &g2)
 
 // returns 0.0..1.0
 // Samples random pairs of individuals regardless if they are alive or not
-float geneticDiversity()
+float geneticDiversity(const unsigned population, Peeps peeps, const unsigned genomeComparisonMethod, RandomUintGenerator &randomUint)
 {
-    if (p.population < 2) {
+    if (population < 2) {
         return 0.0;
     }
 
     // count limits the number of genomes sampled for performance reasons.
-    unsigned count = std::min(1000U, p.population);    // todo: !!! p.analysisSampleSize;
+    unsigned count = std::min(1000U, population);    // todo: !!! p.analysisSampleSize;
     int numSamples = 0;
     float similaritySum = 0.0f;
 
     while (count > 0) {
-        unsigned index0 = randomUint(1, p.population - 1); // skip first and last elements
+        unsigned index0 = randomUint(1, population - 1); // skip first and last elements
         unsigned index1 = index0 + 1;
-        similaritySum += genomeSimilarity(peeps[index0].genome, peeps[index1].genome);
+        similaritySum += genomeSimilarity(peeps[index0].genome, peeps[index1].genome, genomeComparisonMethod);
         --count;
         ++numSamples;
     }

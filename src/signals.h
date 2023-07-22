@@ -7,6 +7,7 @@
 #include <cstdint>
 #include "common/include/column.h"
 #include "common/include/layer.h"
+#include "common/include/coord.h"
 namespace BS {
 
 // Usage: uint8_t magnitude = signals[layer][x][y];

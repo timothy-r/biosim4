@@ -4,6 +4,8 @@ namespace BS
 {
     GridCircle::GridCircle(Grid &g, Coord l, float r) : grid(g), loc(l), radius(r) {}
 
+    // GridCircle::~GridCircle() {}
+
     void GridCircle::accept(GridLocationVisitor &visitor)
     {
         for (int dx = -std::min<int>(radius, loc.x); dx <= std::min<int>(radius, (grid.sizeX() - loc.x) - 1); ++dx) {

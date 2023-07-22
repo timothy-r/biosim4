@@ -3,15 +3,16 @@
 
 #include <cstdint>
 #include <vector>
-#include "common/include/coord.h"
-#include "common/include/grid.h"
-#include "params.h"
-#include "indiv.h"
+#include "../../common/include/coord.h"
+#include "../../common/include/grid.h"
+#include "../../params.h"
+#include "./indiv.h"
 
 namespace BS {
 
 struct Indiv;
 extern class Grid grid;
+struct RandomUintGenerator;
 
 // This class keeps track of alive and dead Indiv's and where they
 // are in the Grid.
@@ -31,7 +32,7 @@ extern class Grid grid;
 class Peeps {
 public:
     Peeps(); // makes zero individuals
-    void init(unsigned population);
+    void init(unsigned population);//, std::unique_ptr<RandomUintGenerator> r);
     void queueForDeath(const Indiv &);
     void drainDeathQueue();
     void queueForMove(const Indiv &, Coord newLoc);
@@ -47,6 +48,7 @@ public:
     // Direct access:
     Indiv & operator[](uint16_t index) { return individuals[index]; }
     Indiv const & operator[](uint16_t index) const { return individuals[index]; }
+
 private:
     std::vector<Indiv> individuals; // Index value 0 is reserved
     std::vector<uint16_t> deathQueue;

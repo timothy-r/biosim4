@@ -13,7 +13,9 @@ namespace BS {
             GridCircle(Grid &g, Coord l, float r);
 
             void accept(GridLocationVisitor &visitor) override;
-        
+
+            // ~GridCircle();
+
         private:
             Grid& grid;
             Coord loc;

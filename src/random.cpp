@@ -21,6 +21,10 @@
 
 namespace BS {
 
+    RandomUintGenerator::~RandomUintGenerator()
+    {
+        
+    }
 
 // If parameter deterministic is true, we'll initialize the RNG with
 // the seed specified in RNGSeed, otherwise we'll initialize

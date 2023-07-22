@@ -2,7 +2,9 @@
 // Manages layers of pheremones
 
 #include <cstdint>
-#include "simulator.h"
+// #include "../include/visitNeighbourhood.h"
+#include "./signals.h"
+#include "./simulator.h"
 
 namespace BS {
 
@@ -47,12 +49,12 @@ void Signals::fade(unsigned layerNum)
 {
     constexpr unsigned fadeAmount = 1;
 
-    for (int16_t x = 0; x < p.sizeX; ++x) {
-        for (int16_t y = 0; y < p.sizeY; ++y) {
-            if (signals[layerNum][x][y] >= fadeAmount) {
-                signals[layerNum][x][y] -= fadeAmount;  // fade center cell
+    for (int16_t x = 0; x < data.size(); ++x) {
+        for (int16_t y = 0; y < data[x].size(); ++y) {
+            if (data[layerNum][x][y] >= fadeAmount) {
+                data[layerNum][x][y] -= fadeAmount;  // fade center cell
             } else {
-                signals[layerNum][x][y] = 0;
+                data[layerNum][x][y] = 0;
             }
         }
     }

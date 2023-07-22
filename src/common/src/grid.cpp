@@ -102,7 +102,29 @@ namespace BS {
 
     void Grid::incrementLayer(uint16_t layerNum, Coord loc)
     {
+        if (hasLayer(layerNum) && isInBounds(loc)){
 
+            // constexpr float radius = 1.5;
+            // constexpr uint8_t centerIncreaseAmount = 2;
+            // constexpr uint8_t neighborIncreaseAmount = 1;
+
+            // #pragma omp critical
+            // {
+            //     visitNeighborhood(loc, radius, [layerNum](Coord loc) {
+            //         if (signals[layerNum][loc.x][loc.y] < SIGNAL_MAX) {
+            //             signals[layerNum][loc.x][loc.y] =
+            //                     std::min<unsigned>(SIGNAL_MAX,
+            //                                     signals[layerNum][loc.x][loc.y] + neighborIncreaseAmount);
+            //         }
+            //     });
+
+            //     if (layers[layerNum][loc.x][loc.y] < SIGNAL_MAX) {
+            //         layers[layerNum][loc.x][loc.y] =
+            //                     std::min<unsigned>(SIGNAL_MAX,
+            //                                     layers[layerNum][loc.x][loc.y] + centerIncreaseAmount);
+            //     }
+            // }
+        }
     }
     
     /**
@@ -118,7 +140,7 @@ namespace BS {
     
     /**
      * Iterates over the whole area of a single layer, reducing the value of each cell
-     *  
+     * use a GridRectangle  
      * TODO: parameterize fadeAmount, as an instance property?
     */
     void Grid::fadeLayer(unsigned layerNum)

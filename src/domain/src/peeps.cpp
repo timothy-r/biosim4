@@ -6,7 +6,7 @@
 #include <cassert>
 #include <numeric>
 #include <utility>
-#include "simulator.h"
+#include "../../simulator.h"
 
 namespace BS {
 
@@ -18,6 +18,12 @@ Peeps::Peeps()
 
 void Peeps::init(unsigned population)
 {
+    // individuals.clear();
+
+    // for (uint16_t index = 1; index <= population; ++index) {
+    //     individuals[index] = Indiv(r);
+    // }
+
     // Index 0 is reserved, so add one:
     individuals.resize(population + 1);
 }

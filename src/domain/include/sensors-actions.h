@@ -51,7 +51,7 @@ enum Sensor {
     AGE,               // I
     BARRIER_FWD,       // W neighborhood barrier distance forward-reverse axis
     BARRIER_LR,        // W neighborhood barrier distance left-right axis
-    RANDOM,            //   random sensor value, uniform distribution
+    // RANDOM,            //   random sensor value, uniform distribution
     SIGNAL0,           // W strength of signal0 in neighborhood
     SIGNAL0_FWD,       // W strength of signal0 in the forward-reverse axis
     SIGNAL0_LR,        // W strength of signal0 in the left-right axis

@@ -4,6 +4,11 @@ namespace BS
 {
     GridRectangle::GridRectangle(Grid &g, Coord min_, Coord max_) : grid(g), min(min_), max(max_) {}
 
+    // GridRectangle::~GridRectangle()
+    // {
+
+    // }
+
     /**
      * Calls visitor.visit() on all locs within the rectangle
     */

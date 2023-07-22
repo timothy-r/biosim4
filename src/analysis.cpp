@@ -30,7 +30,7 @@ std::string sensorName(Sensor sensor)
     case POPULATION: return "population"; break;
     case POPULATION_FWD: return "population fwd"; break;
     case POPULATION_LR: return "population LR"; break;
-    case RANDOM: return "random"; break;
+    // case RANDOM: return "random"; break;
     case SIGNAL0: return "signal 0"; break;
     case SIGNAL0_FWD: return "signal 0 fwd"; break;
     case SIGNAL0_LR: return "signal 0 LR"; break;
@@ -87,7 +87,7 @@ std::string sensorShortName(Sensor sensor)
     case POPULATION: return "Pop"; break;
     case POPULATION_FWD: return "Pfd"; break;
     case POPULATION_LR: return "Plr"; break;
-    case RANDOM: return "Rnd"; break;
+    // case RANDOM: return "Rnd"; break;
     case SIGNAL0: return "Sg"; break;
     case SIGNAL0_FWD: return "Sfd"; break;
     case SIGNAL0_LR: return "Slr"; break;
@@ -281,7 +281,7 @@ void appendEpochLog(unsigned generation, unsigned numberSurvivors, unsigned murd
     foutput.open(p.logDir + "/epoch-log.txt", std::ios::app);
 
     if (foutput.is_open()) {
-        foutput << generation << " " << numberSurvivors << " " << geneticDiversity()
+        foutput << generation << " " << numberSurvivors << " " << geneticDiversity(p.population, peeps, p.genomeComparisonMethod, randomUint)
                 << " " << averageGenomeLength() << " " << murderCount << std::endl;
     } else {
         assert(false);

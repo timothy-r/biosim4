@@ -8,5 +8,7 @@ namespace BS {
 
         public:
             virtual void accept(GridLocationVisitor &visitor) = 0;
+            
+            virtual ~GridShape();
     };
 };

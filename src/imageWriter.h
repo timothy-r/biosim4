@@ -8,9 +8,9 @@
 #include <mutex>
 #include <condition_variable>
 #include <thread>
-#include "indiv.h"
+#include "domain/include/indiv.h"
 #include "params.h"
-#include "peeps.h"
+#include "domain/include/peeps.h"
 
 namespace BS {
 

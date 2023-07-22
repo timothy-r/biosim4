@@ -4,12 +4,11 @@
 // Main header for the simulator. Also see simulator.cpp.
 
 #include "common/include/coord.h"
-// #include "common/basicTypes.h"   // types Dir, Coord, Polar and their values
 #include "params.h"       // params from the config file plus some extra stuff
-#include "indiv.h"        // data structure for an individual
+#include "domain/include/indiv.h"        // data structure for an individual
 #include "common/include/grid.h"         // the 2D world where the peeps live
 #include "signals.h"      // a 2D array of pheromones that overlay the world grid
-#include "peeps.h"        // the 2D world where the peeps live
+#include "domain/include/peeps.h"        // the 2D world where the peeps live
 #include "random.h"
 
 namespace BS {

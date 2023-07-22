@@ -32,6 +32,9 @@ set(
     ../src/common/src/createGridBarrierVisitor.cpp
     ../src/common/src/gridShapeFactory.cpp
     ../src/common/src/gridBuilder.cpp
+    ../src/common/src/gridShape.cpp
+    ../src/common/src/gridLocationVisitor.cpp 
+    ../src/common/src/layer.cpp
     ../src/random.cpp
 )
 

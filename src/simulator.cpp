@@ -73,7 +73,7 @@ The other important variables are:
 void simStepOneIndiv(Indiv &indiv, unsigned simStep)
 {
     ++indiv.age; // for this implementation, tracks simStep
-    auto actionLevels = indiv.feedForward(simStep);
+    auto actionLevels = indiv.feedForward(simStep, p.genomeComparisonMethod);
     executeActions(indiv, actionLevels);
 }
 
@@ -126,6 +126,9 @@ void simulator(int argc, char **argv)
     // will be reused in each new generation.
     grid.init(p.signalLayers, p.sizeX, p.sizeY); // the land on which the peeps live
     signals.init(p.signalLayers, p.sizeX, p.sizeY);  // where the pheromones waft
+
+    // std::unique_ptr<RandomUintGenerator> rand = std::make_unique<RandomUintGenerator>();
+
     peeps.init(p.population); // the peeps themselves
 
     // If imageWriter is to be run in its own thread, start it here:
@@ -194,9 +197,9 @@ void simulator(int argc, char **argv)
     //t.join();
 }
 
-// This is a utility function used when inspecting a local neighborhood around
-// some location. This function feeds each valid (in-bounds) location in the specified
-// neighborhood to the specified function. Locations include self (center of the neighborhood).
+// // This is a utility function used when inspecting a local neighborhood around
+// // some location. This function feeds each valid (in-bounds) location in the specified
+// // neighborhood to the specified function. Locations include self (center of the neighborhood).
 void visitNeighborhood(Coord loc, float radius, std::function<void(Coord)> f)
 {
     for (int dx = -std::min<int>(radius, loc.x); dx <= std::min<int>(radius, (p.sizeX - loc.x) - 1); ++dx) {

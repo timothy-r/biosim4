@@ -2,13 +2,13 @@
 #define INDIV_H_INCLUDED
 
 // Indiv is the structure that represents one individual agent.
-
+#include <memory>
 #include <algorithm>
 #include <cstdint>
 #include <array>
-#include "common/include/coord.h"
-#include "common/include/dir.h"
-#include "genome-neurons.h"
+#include "../../common/include/coord.h"
+#include "../../common/include/dir.h"
+#include "./genome-neurons.h"
 
 namespace BS {
 
@@ -27,10 +27,18 @@ struct Indiv {
     unsigned longProbeDist; // distance for long forward probe for obstructions
     Dir lastMoveDir;  // direction of last movement
     unsigned challengeBits; // modified when the indiv accomplishes some task
-    std::array<float, Action::NUM_ACTIONS> feedForward(unsigned simStep); // reads sensors, returns actions
+
+    // std::unique_ptr<RandomUintGenerator> randomUint;
+
+    // Indiv(std::unique_ptr<RandomUintGenerator> r);
+
+    // ~Indiv();
+
+    std::array<float, Action::NUM_ACTIONS> feedForward(unsigned simStep, unsigned genomeComparisonMethod); // reads sensors, returns actions
+    
     // make getSensor private
-    float getSensor(Sensor sensorNum, unsigned simStep) const;
-    void initialize(uint16_t index, Coord loc, Genome &&genome);
+    float getSensor(Sensor sensorNum, unsigned simStep , unsigned genomeComparisonMethod) const;
+    void initialize(uint16_t index, Coord loc, Genome &&genome, Dir dir);
     void createWiringFromGenome(); // creates .nnet member from .genome member
     void printNeuralNet() const;
     void printIGraphEdgeList() const;

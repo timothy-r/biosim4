@@ -7,6 +7,9 @@
 #include <cassert>
 #include "simulator.h"
 #include "common/include/gridBuilder.h"
+#include "domain/include/genomeBuilder.h"
+#include "dirFactory.h"
+
 namespace BS {
 
 extern std::pair<bool, float> passedSurvivalCriterion(const Indiv &indiv, unsigned challenge);
@@ -23,16 +26,29 @@ void initializeGeneration0()
     // use a GridBuilder to create the barriers
     auto barrierType = GridBuilder::barrierType(p.barrierType);
 
-    GridBuilder builder = GridBuilder(randomUint);
-    builder.createBarrier(grid, barrierType);
+    GridBuilder gridBuilder = GridBuilder(randomUint);
+    gridBuilder.createBarrier(grid, barrierType);
 
     // The signal layers have already been allocated, so just reuse them
     signals.zeroFill();
 
     // Spawn the population. The peeps container has already been allocated,
     // just clear and reuse it
+
+    GenomeBuilder genomeBuilder = GenomeBuilder(
+        randomUint, p.genomeInitialLengthMin, p.genomeInitialLengthMax, p.genomeMaxLength,
+        p.pointMutationRate, p.geneInsertionDeletionRate, p.deletionRatio,
+        p.sexualReproduction, p.chooseParentsByFitness
+    );
+    
     for (uint16_t index = 1; index <= p.population; ++index) {
-        peeps[index].initialize(index, findEmptyLocation(grid), makeRandomGenome());
+        
+        peeps[index].initialize(
+            index, 
+            findEmptyLocation(grid), 
+            genomeBuilder.makeRandomGenome(),
+            DirFactory::random8()
+        );
     }
 }
 
@@ -66,14 +82,25 @@ void initializeNewGeneration(const std::vector<Genome> &parentGenomes, unsigned 
     
     auto barrierType = GridBuilder::barrierType(p.barrierType);
 
-    GridBuilder builder = GridBuilder(randomUint);
-    builder.createBarrier(grid, barrierType);
+    GridBuilder gridBuilder = GridBuilder(randomUint);
+    gridBuilder.createBarrier(grid, barrierType);
 
     signals.zeroFill();
+    
+    GenomeBuilder genomeBuilder = GenomeBuilder(
+        randomUint, p.genomeInitialLengthMin, p.genomeInitialLengthMax, p.genomeMaxLength,
+        p.pointMutationRate, p.geneInsertionDeletionRate, p.deletionRatio,
+        p.sexualReproduction, p.chooseParentsByFitness
+    );
 
     // Spawn the population. This overwrites all the elements of peeps[]
     for (uint16_t index = 1; index <= p.population; ++index) {
-        peeps[index].initialize(index, findEmptyLocation(grid), generateChildGenome(parentGenomes));
+        peeps[index].initialize(
+            index,
+            findEmptyLocation(grid), 
+            genomeBuilder.generateChildGenome(parentGenomes),
+            DirFactory::random8()
+        );
     }
 }
 
@@ -160,7 +187,7 @@ unsigned spawnNewGeneration(unsigned generation, unsigned murderCount)
                             const std::pair<uint16_t, float> &possibleParent = parents[(startIndex + count) % parents.size()];
                             const Genome &g1 = peeps[sacrificedIndex].genome;
                             const Genome &g2 = peeps[possibleParent.first].genome;
-                            float similarity = genomeSimilarity(g1, g2);
+                            float similarity = genomeSimilarity(g1, g2, p.genomeComparisonMethod);
                             if (similarity >= threshold) {
                                 survivingKin.push_back(possibleParent);
                                 // mark this one so we don't use it again?

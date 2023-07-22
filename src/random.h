@@ -23,6 +23,7 @@ namespace BS {
             void initialize(bool deterministic, unsigned RNGSeed); // must be called to seed the RNG
             uint32_t operator()();
             unsigned operator()(unsigned min, unsigned max);
+            ~RandomUintGenerator();
     };
 
 // The globally-scoped random number generator. Declaring it

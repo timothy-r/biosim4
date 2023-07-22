@@ -3,8 +3,10 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
-#include "simulator.h"
-
+#include <array>
+// #include "simulator.h"
+#include "../include/sensors-actions.h"
+#include "../include/indiv.h"
 namespace BS {
 
 /********************************************************************************
@@ -39,7 +41,7 @@ We have three types of neurons:
          actionLevels[] which is returned to the caller by value (thanks RVO).
 ********************************************************************************/
 
-std::array<float, Action::NUM_ACTIONS> Indiv::feedForward(unsigned simStep)
+std::array<float, Action::NUM_ACTIONS> Indiv::feedForward(unsigned simStep, unsigned genomeComparisonMethod)
 {
     // This container is used to return values for all the action outputs. This array
     // contains one value per action neuron, which is the sum of all its weighted
@@ -76,7 +78,7 @@ std::array<float, Action::NUM_ACTIONS> Indiv::feedForward(unsigned simStep)
         // The values are summed for now, later passed through a transfer function
         float inputVal;
         if (conn.sourceType == SENSOR) {
-            inputVal = getSensor((Sensor)conn.sourceNum, simStep);
+            inputVal = getSensor((Sensor)conn.sourceNum, simStep, genomeComparisonMethod);
         } else {
             inputVal = nnet.neurons[conn.sourceNum].output;
         }

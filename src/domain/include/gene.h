@@ -8,7 +8,7 @@ namespace BS
     constexpr uint8_t ACTION = 1;  // always a sink
     constexpr uint8_t NEURON = 0;  // can be either a source or sink
 
-    class Gene { //__attribute__((packed)) Gene {
+    class Gene {
 
         public:
             uint16_t sourceType:1; // SENSOR or NEURON
@@ -19,9 +19,7 @@ namespace BS
 
             static constexpr float f1 = 8.0;
             static constexpr float f2 = 64.0;
-            //float weightAsFloat() { return std::pow(weight / f1, 3.0) / f2; }
             float weightAsFloat() const;
-            // static int16_t makeRandomWeight();
     };
 
 

@@ -1,5 +1,4 @@
 #include "../include/gene.h"
-// #include "../../random.h"
 
 namespace BS
 {

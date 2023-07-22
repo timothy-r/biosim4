@@ -36,6 +36,8 @@ set(
     ../src/common/src/gridLocationVisitor.cpp 
     ../src/common/src/layer.cpp
     ../src/random.cpp
+
+    ../src/domain/test/test_gene.cpp
 )
 
 include(FetchContent)

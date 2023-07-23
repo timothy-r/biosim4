@@ -13,110 +13,110 @@ namespace BS {
 // to relocate to different offsets in the genome. I.e., this function is
 // tolerant of gaps, relocations, and genomes of unequal lengths.
 //
-float jaro_winkler_distance(const Genome &genome1, const Genome &genome2) {
-    float dw;
-    auto max = [](int a, int b) { return a > b ? a : b; };
-    auto min = [](int a, int b) { return a < b ? a : b; };
+// float jaro_winkler_distance(const Genome &genome1, const Genome &genome2) {
+//     float dw;
+//     auto max = [](int a, int b) { return a > b ? a : b; };
+//     auto min = [](int a, int b) { return a < b ? a : b; };
 
-    const auto &s = genome1;
-    const auto &a = genome2;
+//     const auto &s = genome1;
+//     const auto &a = genome2;
 
-    int i, j, l;
-    int m = 0, t = 0;
-    int sl = s.size(); // strlen(s);
-    int al = a.size(); // strlen(a);
+//     int i, j, l;
+//     int m = 0, t = 0;
+//     int sl = s.size(); // strlen(s);
+//     int al = a.size(); // strlen(a);
 
-    constexpr unsigned maxNumGenesToCompare = 20;
-    sl = min(maxNumGenesToCompare, sl); // optimization: approximate for long genomes
-    al = min(maxNumGenesToCompare, al);
+//     constexpr unsigned maxNumGenesToCompare = 20;
+//     sl = min(maxNumGenesToCompare, sl); // optimization: approximate for long genomes
+//     al = min(maxNumGenesToCompare, al);
 
-    std::vector<int> sflags(sl, 0);
-    std::vector<int> aflags(al, 0);
-    int range = max(0, max(sl, al) / 2 - 1);
+//     std::vector<int> sflags(sl, 0);
+//     std::vector<int> aflags(al, 0);
+//     int range = max(0, max(sl, al) / 2 - 1);
 
-    if (!sl || !al)
-        return 0.0;
+//     if (!sl || !al)
+//         return 0.0;
 
-    /* calculate matching characters */
-    for (i = 0; i < al; i++) {
-        for (j = max(i - range, 0), l = min(i + range + 1, sl); j < l; j++) {
-            if ((a[i] == s[j]) && !sflags[j]) {
-                sflags[j] = 1;
-                aflags[i] = 1;
-                m++;
-                break;
-            }
-        }
-    }
+//     /* calculate matching characters */
+//     for (i = 0; i < al; i++) {
+//         for (j = max(i - range, 0), l = min(i + range + 1, sl); j < l; j++) {
+//             if ((a[i] == s[j]) && !sflags[j]) {
+//                 sflags[j] = 1;
+//                 aflags[i] = 1;
+//                 m++;
+//                 break;
+//             }
+//         }
+//     }
 
-    if (!m)
-        return 0.0;
+//     if (!m)
+//         return 0.0;
 
-    /* calculate character transpositions */
-    l = 0;
-    for (i = 0; i < al; i++) {
-        if (aflags[i] == 1) {
-            for (j = l; j < sl; j++) {
-                if (sflags[j] == 1) {
-                    l = j + 1;
-                    break;
-                }
-            }
-            if (a[i] != s[j])
-                t++;
-        }
-    }
-    t /= 2;
+//     /* calculate character transpositions */
+//     l = 0;
+//     for (i = 0; i < al; i++) {
+//         if (aflags[i] == 1) {
+//             for (j = l; j < sl; j++) {
+//                 if (sflags[j] == 1) {
+//                     l = j + 1;
+//                     break;
+//                 }
+//             }
+//             if (a[i] != s[j])
+//                 t++;
+//         }
+//     }
+//     t /= 2;
 
-    /* Jaro distance */
-    dw = (((float)m / sl) + ((float)m / al) + ((float)(m - t) / m)) / 3.0f;
-    return dw;
-}
-
-
-// Works only for genomes of equal length
-float hammingDistanceBits(const Genome &genome1, const Genome &genome2)
-{
-    assert(genome1.size() == genome2.size());
-
-    const unsigned int *p1 = (const unsigned int *)genome1.data();
-    const unsigned int *p2 = (const unsigned int *)genome2.data();
-    const unsigned numElements = genome1.size();
-    const unsigned bytesPerElement = sizeof(genome1[0]);
-    const unsigned lengthBytes = numElements * bytesPerElement;
-    const unsigned lengthBits = lengthBytes * 8;
-    unsigned bitCount = 0;
-
-    for (unsigned index = 0; index < genome1.size(); ++p1, ++p2, ++index) {
-        bitCount += __builtin_popcount(*p1 ^ *p2);
-    }
-
-    // For two completely random bit patterns, about half the bits will differ,
-    // resulting in c. 50% match. We will scale that by 2X to make the range
-    // from 0 to 1.0. We clip the value to 1.0 in case the two patterns are
-    // negatively correlated for some reason.
-    return 1.0 - std::min(1.0, (2.0 * bitCount) / (float)lengthBits);
-}
+//     /* Jaro distance */
+//     dw = (((float)m / sl) + ((float)m / al) + ((float)(m - t) / m)) / 3.0f;
+//     return dw;
+// }
 
 
 // Works only for genomes of equal length
-float hammingDistanceBytes(const Genome &genome1, const Genome &genome2)
-{
-    assert(genome1.size() == genome2.size());
+// float hammingDistanceBits(const Genome &genome1, const Genome &genome2)
+// {
+//     assert(genome1.size() == genome2.size());
 
-    const unsigned int *p1 = (const unsigned int *)genome1.data();
-    const unsigned int *p2 = (const unsigned int *)genome2.data();
-    const unsigned numElements = genome1.size();
-    const unsigned bytesPerElement = sizeof(genome1[0]);
-    const unsigned lengthBytes = numElements * bytesPerElement;
-    unsigned byteCount = 0;
+//     const unsigned int *p1 = (const unsigned int *)genome1.data();
+//     const unsigned int *p2 = (const unsigned int *)genome2.data();
+//     const unsigned numElements = genome1.size();
+//     const unsigned bytesPerElement = sizeof(genome1[0]);
+//     const unsigned lengthBytes = numElements * bytesPerElement;
+//     const unsigned lengthBits = lengthBytes * 8;
+//     unsigned bitCount = 0;
 
-    for (unsigned index = 0; index < genome1.size(); ++p1, ++p2, ++index) {
-        byteCount += (unsigned)(*p1 == *p2);
-    }
+//     for (unsigned index = 0; index < genome1.size(); ++p1, ++p2, ++index) {
+//         bitCount += __builtin_popcount(*p1 ^ *p2);
+//     }
 
-    return byteCount / (float)lengthBytes;
-}
+//     // For two completely random bit patterns, about half the bits will differ,
+//     // resulting in c. 50% match. We will scale that by 2X to make the range
+//     // from 0 to 1.0. We clip the value to 1.0 in case the two patterns are
+//     // negatively correlated for some reason.
+//     return 1.0 - std::min(1.0, (2.0 * bitCount) / (float)lengthBits);
+// }
+
+
+// Works only for genomes of equal length
+// float hammingDistanceBytes(const Genome &genome1, const Genome &genome2)
+// {
+//     assert(genome1.size() == genome2.size());
+
+//     const unsigned int *p1 = (const unsigned int *)genome1.data();
+//     const unsigned int *p2 = (const unsigned int *)genome2.data();
+//     const unsigned numElements = genome1.size();
+//     const unsigned bytesPerElement = sizeof(genome1[0]);
+//     const unsigned lengthBytes = numElements * bytesPerElement;
+//     unsigned byteCount = 0;
+
+//     for (unsigned index = 0; index < genome1.size(); ++p1, ++p2, ++index) {
+//         byteCount += (unsigned)(*p1 == *p2);
+//     }
+
+//     return byteCount / (float)lengthBytes;
+// }
 
 
 // Returns 0.0..1.0
@@ -126,11 +126,11 @@ float genomeSimilarity(const Genome &g1, const Genome &g2)
 {
     switch (p.genomeComparisonMethod) {
     case 0:
-        return jaro_winkler_distance(g1, g2);
+        return g1.jaro_winkler_distance(g2);
     case 1:
-        return hammingDistanceBits(g1, g2);
+        return g1.hammingDistanceBits(g2);
     case 2:
-        return hammingDistanceBytes(g1, g2);
+        return g1.hammingDistanceBytes(g2);
     default:
         assert(false);
     }

@@ -3,7 +3,7 @@
 
 namespace BS {
 
-    TEST_CASE("TestWeight","[Gene]") {
+    TEST_CASE("TestSize","[Gene]") {
         
         Gene g;
 

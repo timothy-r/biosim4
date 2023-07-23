@@ -3,6 +3,8 @@
 
 #include "../include/genomeBuilder.h"
 
+
+
 namespace BS
 {
     GenomeBuilder::GenomeBuilder(RandomUintGenerator &r, unsigned min, unsigned max, unsigned gml, double pmr, double gidr, double dr, bool sr, bool cp) : 
@@ -15,7 +17,7 @@ namespace BS
 
         unsigned length = randomUint(minLength, maxLength);
         for (unsigned n = 0; n < length; ++n) {
-            genome.push_back(makeRandomGene());
+            genome.add(makeRandomGene());
         }
 
         return genome;
@@ -75,7 +77,8 @@ namespace BS
             if (index0 > index1) {
                 std::swap(index0, index1);
             }
-            std::copy(gShorter.begin() + index0, gShorter.begin() + index1, genome.begin() + index0);
+            genome.overlayWithSliceOf(gShorter, index0, index1);
+            // std::copy(gShorter.genes().begin() + index0, gShorter.genes().begin() + index1, genome.genes().begin() + index0);
         };
 
         if (sexualReproduction) {
@@ -103,8 +106,11 @@ namespace BS
         }
 
         randomInsertDeletion(genome);
+
         assert(!genome.empty());
+        
         applyPointMutations(genome);
+
         assert(!genome.empty());
         assert(genome.size() <= genomeMaxLength);
 
@@ -132,11 +138,13 @@ namespace BS
         if (genome.size() > length && length > 0) {
             if (randomUint() / (float)RANDOM_UINT_MAX < 0.5) {
                 // trim front
-                unsigned numberElementsToTrim = genome.size() - length;
-                genome.erase(genome.begin(), genome.begin() + numberElementsToTrim);
+                genome.erase(length);
+                // unsigned numberElementsToTrim = genome.size() - length;
+                // genome.erase(genome.begin(), genome.begin() + numberElementsToTrim);
             } else {
                 // trim back
-                genome.erase(genome.end() - (genome.size() - length), genome.end());
+                genome.eraseBack(length);
+                // genome.erase(genome.end() - (genome.size() - length), genome.end());
             }
         }
     }
@@ -150,20 +158,25 @@ namespace BS
         unsigned elementIndex = randomUint(0, genome.size() - 1);
         uint8_t bitIndex8 = 1 << randomUint(0, 7);
 
+        // this is not used 
         if (method == 0) {
-            ((uint8_t *)&genome[0])[byteIndex] ^= bitIndex8;
+            // ((uint8_t *)&genome[0])[byteIndex] ^= bitIndex8;
+
         } else if (method == 1) {
+            
+            Gene &gene = genome.geneAt(elementIndex);
+
             float chance = randomUint() / (float)RANDOM_UINT_MAX; // 0..1
             if (chance < 0.2) { // sourceType
-                genome[elementIndex].sourceType ^= 1;
+                gene.sourceType ^= 1;
             } else if (chance < 0.4) { // sinkType
-                genome[elementIndex].sinkType ^= 1;
+                gene.sinkType ^= 1;
             } else if (chance < 0.6) { // sourceNum
-                genome[elementIndex].sourceNum ^= bitIndex8;
+                gene.sourceNum ^= bitIndex8;
             } else if (chance < 0.8) { // sinkNum
-                genome[elementIndex].sinkNum ^= bitIndex8;
+                gene.sinkNum ^= bitIndex8;
             } else { // weight
-                genome[elementIndex].weight ^= (1 << randomUint(1, 15));
+                gene.weight ^= (1 << randomUint(1, 15));
             }
         } else {
             assert(false);
@@ -180,12 +193,14 @@ namespace BS
             if (randomUint() / (float)RANDOM_UINT_MAX < deletionRatio) {
                 // deletion
                 if (genome.size() > 1) {
-                    genome.erase(genome.begin() + randomUint(0, genome.size() - 1));
+                    unsigned index = randomUint(0, genome.size() - 1);
+                    genome.eraseAt(index);
+                    // genome.erase(genome.begin() + randomUint(0, genome.size() - 1));
                 }
             } else if (genome.size() < genomeMaxLength) {
                 // insertion
                 //genome.insert(genome.begin() + randomUint(0, genome.size() - 1), makeRandomGene());
-                genome.push_back(makeRandomGene());
+                genome.add(makeRandomGene());
             }
         }
     }

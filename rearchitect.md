@@ -115,19 +115,19 @@
 # Gene 
 * convert to a class? add more methods at least
 
-* move Gene::makeRandomWeight to a Gene factory class, it's only used by makeRandomGene()
-* move makeRandomGenome() to Genome or Gene factory too
+[x] move Gene::makeRandomWeight to a Gene factory class, it's only used by makeRandomGene()
+[x] move makeRandomGenome() to Genome or Gene factory too
 
-* move genesMatch to Gene == operator?
-* move global Gene comparison methods to Gene 
+[x] move genesMatch to Gene == operator?
+[ ] move global Gene comparison methods to Gene 
 
     * jaro_winkler_distance(g1, g2);
     * hammingDistanceBits(g1, g2);
     * hammingDistanceBytes(g1, g2);
 
-* move genomeSimilarity to Gene - remove the global p
+[] move genomeSimilarity to Gene - remove the global p
 
-* move geneticDiversity to peeps 
+[] move geneticDiversity to peeps 
 
 # genome.cpp contains global procedural functions to operate on the Genome
 * make Genome into a class with this methods
